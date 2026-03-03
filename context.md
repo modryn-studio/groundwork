@@ -8,9 +8,15 @@
 
 ## URL
 <!-- The deployed URL for this tool.
-     All tools live on a subdomain of modrynstudio.com — no separate domain purchase needed.
-     Format: toolname.modrynstudio.com
-     Example: hiking-finder.modrynstudio.com
+     Tools live on modrynstudio.com as subdirectory paths — NOT subdomains.
+     Subdomains (toolname.modrynstudio.com) are treated as separate sites by Google and get no domain authority.
+     Subdirectories (modrynstudio.com/toolname) inherit authority. Always use subdirectories.
+
+     Option A (recommended — 48hr builds): add the tool as routes in modryn-studio-v2.
+       URL = https://modrynstudio.com/[toolroute]
+     Option B: separate Vercel project + rewrite in modryn-studio-v2 next.config.ts.
+       URL = https://modrynstudio.com/tools/[slug]
+
      Exception: pre-existing brands with their own domain (e.g. specifythat.com). -->
 
 ## Stack Additions
