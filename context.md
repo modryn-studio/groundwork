@@ -45,6 +45,10 @@
        No server code, no env vars, no npm package.
        Upgrade path: /api/checkout route for dynamic pricing (needs `stripe` npm + env vars). -->
 
+## Distribution & Monetization
+Follows studio standard strategy.md. 
+Launch sequence: Reddit day 1 → engage 48hrs → pSEO templates wired at build → Indie Hackers week 2.
+
 ## Target Subreddits
 <!-- Subreddits where the target user's pain lives.
      Used by /social prompt for launch-day distribution.
