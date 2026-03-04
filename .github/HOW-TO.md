@@ -1,6 +1,6 @@
 # Copilot Setup — How To Use
 
-## New Project Setup
+## New Next.js Project Setup
 
 1. Create a blank repo on GitHub, then clone it locally
 2. Clone this repo into the project folder:
