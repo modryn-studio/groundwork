@@ -1,4 +1,4 @@
-// Single source of truth for all site-wide metadata.
+﻿// Single source of truth for all site-wide metadata.
 // /project-init fills this in from context.md + brand.md.
 // Every other file imports from here — never hardcode site metadata elsewhere.
 export const site = {
@@ -14,6 +14,7 @@ export const site = {
   // Example: 'GoAnyway — Find an Event and Walk In Confident'
   ogTitle: 'TODO: [Site Name] — [tagline] (50–60 chars)',
   ogDescription: 'TODO: OG description (110–160 chars)',
+  cta: 'TODO: CTA pill text (5-8 words, e.g. Get started free)', // used in OG images
   founder: 'Luke Hanner',
   // Brand colors — used in manifest theme_color / background_color
   accent: '#F97415', // TODO: brand accent hex
@@ -29,3 +30,4 @@ export const site = {
     shipordie: 'https://shipordie.club/lukehanner',
   },
 } as const;
+

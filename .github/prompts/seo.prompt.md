@@ -1,7 +1,7 @@
----
+﻿---
 name: seo
 description: "Pre-launch SEO checklist: validate OG tags, register with search engines, submit sitemap."
-agent: ask
+agent: agent
 ---
 # SEO Launch
 Checklist
@@ -11,7 +11,7 @@ Walk me through the SEO launch steps for this project. First auto-generate any m
 ## Step 0: Auto-Generate Missing Files
 Before auditing, check for and CREATE the following files if they are absent:
 
-**`src/app/sitemap.ts`** — if missing, create it. First check whether `@/config/site` exists — if it does, import `site.url`; otherwise hardcode the domain from `layout.tsx`:
+**`src/app/sitemap.ts`** â€” if missing, create it. First check whether `@/config/site` exists â€” if it does, import `site.url`; otherwise hardcode the domain from `layout.tsx`:
 ```ts
 import { MetadataRoute } from "next";
 import { site } from "@/config/site";
@@ -24,9 +24,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return staticRoutes;
 }
 ```
-Use the actual current date for `lastModified` — do NOT use `new Date()` (which changes on every deploy and causes unnecessary crawl churn). Adapt as needed for any dynamic routes (log posts, tool pages, etc.).
+Use the actual current date for `lastModified` â€” do NOT use `new Date()` (which changes on every deploy and causes unnecessary crawl churn). Adapt as needed for any dynamic routes (log posts, tool pages, etc.).
 
-**`src/app/robots.ts`** — if missing (do NOT create `public/robots.txt`), create it:
+**`src/app/robots.ts`** â€” if missing (do NOT create `public/robots.txt`), create it:
 ```ts
 import { MetadataRoute } from 'next';
 import { site } from '@/config/site';
@@ -39,33 +39,55 @@ export default function robots(): MetadataRoute.Robots {
 }
 ```
 
-**Favicon files** — if `src/app/favicon.ico`, `src/app/icon.png`, or `src/app/apple-icon.png` are missing:
-1. Check if `public/brand/logomark.png` exists (1024×1024 recommended).
-2. If it does and ImageMagick (`magick`) is available, run in PowerShell:
-  ```powershell
-   # Multi-resolution favicon.ico (16/32/48px)
-   magick public\brand\logomark.png -define icon:auto-resize=48,32,16 src\app\favicon.ico
-   # icon.png and apple-icon.png for Next.js App Router
-   Copy-Item public\brand\logomark.png src\app\icon.png
-   Copy-Item public\brand\logomark.png src\app\apple-icon.png
-  ```
-3. If `public/brand/logomark.png` is absent, tell the user: "Drop your 1024×1024 logomark at `public/brand/logomark.png` and re-run `/seo` to auto-generate favicons."
-4. Ensure `layout.tsx` metadata includes:
-   ```ts
-   metadataBase: new URL("https://DOMAIN.com"),
-   icons: { icon: "/icon.png", apple: "/apple-icon.png" },
-   ```
+**Favicon files**  if `src/app/favicon.ico`, `src/app/icon.png`, or `src/app/apple-icon.png` are missing, tell the user to run `/assets`. Do not generate favicons manually  the asset pipeline handles transparency, grayscale detection, and all output paths correctly.
 
-**`src/config/site.ts`** — if missing, create it by reading the site name, URL, description, OG copy, and brand colors from `layout.tsx` and `copilot-instructions.md`:
+**`src/app/opengraph-image.tsx`**  if missing, create it. Use `site.ts` values for copy and colors, and load the logomark from `public/brand/logomark.png`. Always include: logo, headline from `site.ogTitle`, subtitle from `site.description`, and an amber CTA pill. This is the correct default structure:
+```tsx
+import { ImageResponse } from 'next/og';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { site } from '@/config/site';
+
+export const size = { width: 1200, height: 630 };
+export const contentType = 'image/png';
+
+export default async function OpenGraphImage() {
+  const logoData = await readFile(join(process.cwd(), 'public/brand/logomark.png'), 'base64');
+  const logoSrc = `data:image/png;base64,${logoData}`;
+
+  return new ImageResponse(
+    (
+      <div style={{ background: site.bg, width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', padding: '80px' }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={logoSrc} alt={site.name} height={52} style={{ marginBottom: 32, objectFit: 'contain' }} />
+        <h1 style={{ color: '#FAF7F2', fontSize: 64, fontWeight: 700, lineHeight: 1.1, margin: 0, marginBottom: 24 }}>
+          {site.ogTitle}
+        </h1>
+        <p style={{ color: '#9E9693', fontSize: 28, margin: 0, marginBottom: 48 }}>
+          {site.description}
+        </p>
+        <div style={{ display: 'flex', alignItems: 'center', background: site.accent, color: site.bg, fontSize: 22, fontWeight: 700, padding: '14px 28px', borderRadius: 8 }}>
+          {site.cta}
+        </div>
+      </div>
+    ),
+    { ...size }
+  );
+}
+```
+Also generate per-page `opengraph-image.tsx` for each route that has a `page.tsx` but no `opengraph-image.tsx` (scan `src/app/`  exclude root, `api/`, `privacy/`, `terms/`, and any `[param]` dynamic routes). For each, briefly read the `page.tsx` to understand the page's purpose, then use the same template structure with a page-appropriate headline and subtitle. The logo, brand colors, and CTA pill are identical across all pages.
+
+**`src/config/site.ts`** â€” if missing, create it by reading the site name, URL, description, OG copy, and brand colors from `layout.tsx` and `copilot-instructions.md`:
 ```ts
 // Single source of truth for all site-wide metadata.
 export const site = {
   name: '<site name>',
   shortName: '<abbreviated name>',
   url: 'https://<domain>',
-  description: '<meta description (110–160 chars)>',
-  ogTitle: '<OG title (50–60 chars)>',
-  ogDescription: '<OG description (110–160 chars)>',
+  description: '<meta description (110â€“160 chars)>',
+  ogTitle: '<OG title (50â€“60 chars)>',
+  ogDescription: '<OG description (110â€“160 chars)>',
+  cta: '<CTA pill text (5--8 words, e.g. Get your plan for $9)>',
   founder: '<founder name>',
   accent: '<brand accent hex, e.g. #F97415>',
   bg: '<brand bg hex, e.g. #050505>',
@@ -78,7 +100,7 @@ export const site = {
 ```
 Then update `layout.tsx` to import `site` and replace all hardcoded strings. Remove `manifest: '/manifest.json'` from the metadata export (Next.js auto-injects it from `manifest.ts`).
 
-**`src/app/manifest.ts`** — if missing, create it (Next.js serves this at `/manifest.webmanifest` automatically — do NOT create `public/manifest.json`):
+**`src/app/manifest.ts`** â€” if missing, create it (Next.js serves this at `/manifest.webmanifest` automatically â€” do NOT create `public/manifest.json`):
 ```ts
 import { MetadataRoute } from 'next';
 import { site } from '@/config/site';
@@ -102,7 +124,7 @@ export default function manifest(): MetadataRoute.Manifest {
 }
 ```
 
-**`src/components/site-schema.tsx`** — if missing, create it and add `<SiteSchema />` inside `<body>` in `layout.tsx`:
+**`src/components/site-schema.tsx`** â€” if missing, create it and add `<SiteSchema />` inside `<body>` in `layout.tsx`:
 ```tsx
 import { site } from '@/config/site';
 
@@ -123,17 +145,28 @@ export function SiteSchema() {
 
 Report which files were created vs already existed.
 
+**`twitter:site` in `layout.tsx`**  if `twitter.site` is missing from the Twitter card metadata, add it using `site.social?.twitterHandle`:
+```ts
+twitter: {
+  card: 'summary_large_image',
+  site: site.social?.twitterHandle,
+  title: site.ogTitle,
+  description: site.ogDescription,
+},
+```
+
+**Sitemap `lastModified` dates**  if `sitemap.ts` uses `lastModified: new Date()` on any route, replace each with a static ISO date. `new Date()` reports a change on every crawl, wastes crawl budget, and degrades freshness signals. Use a date matching when that page last meaningfully changed.
+
 ## Step 1: Code Audit
 Check the codebase for:
 - [ ] `layout.tsx` has `metadataBase`, `title`, `description`, `openGraph`, `twitter`, `manifest`
 - [ ] `layout.tsx` Twitter card has `site` handle (`twitter.site: site.social?.twitterHandle`)
-- [ ] `layout.tsx` has `icons` field pointing to `/icon.png` and `/apple-icon.png`
 - [ ] `src/app/favicon.ico` exists (multi-resolution, from logomark)
-- [ ] `src/app/icon.png` exists (1024×1024 logomark)
+- [ ] `src/app/icon.png` exists (1024Ã—1024 logomark)
 - [ ] `src/app/apple-icon.png` exists
-- [ ] OG title is 50–60 chars, description is 110–160 chars
+- [ ] OG title is 50â€“60 chars, description is 110â€“160 chars
 - [ ] `src/app/opengraph-image.tsx` exists (homepage OG image, dynamic via `next/og`) -- **required**; `public/og-image.png` alone does NOT inject the image into metadata
-- [ ] Key pages beyond home (e.g. /result, /confirm) also have per-page `opengraph-image.tsx` for unique social cards
+- [ ] Key pages beyond home (e.g. /result, /confirm) also have per-page `opengraph-image.tsx` -- if missing, auto-generate them (see Step 0 above)
 - [ ] `src/config/site.ts` exists and is fully filled in (no TODO placeholder values)
 - [ ] `src/app/manifest.ts` exists (do NOT check for `public/manifest.json`)
 - [ ] `src/app/robots.ts` exists (do NOT check for `public/robots.txt`)
@@ -145,35 +178,34 @@ Report PASS / MISSING for each item with file paths for anything missing.
 
 ## Step 2: Manual Launch Steps (guide me through these)
 
-﻿### Google Search Console
-GSC tracks authority at the root domain level. One Domain property per root domain covers all sub-paths automatically. Submit per-tool sitemaps to that same root property.
+> **Stop here if not yet deployed.** Steps 2 and 3 require a live URL at `modrynstudio.com/tools/[slug]`. If you haven't run `/deploy` in modryn-studio-v2 yet, stop here. Complete Steps 0 and 1, commit, then run `/deploy`  then come back and pick up at Step 2.
 
-**If your root domain is already verified in GSC:**
-Go to the root domain property → **Sitemaps** → submit `https://yourdomain.com/sitemap.xml`. Done.
+ï»¿### Google Search Console
+modrynstudio.com already has a verified **Domain property** in GSC. All tools deployed under that domain are covered automatically.
 
-**If not yet verified:**
-1. Go to https://search.google.com/search-console
-2. Add property → **Domain** → enter your root domain (e.g. `yourdomain.com`, no `https://`)
-3. Verify via DNS TXT record:
-   - Vercel dashboard → click your **team name** (not a project) → left nav: **Domains**
-   - Click the domain → **Advanced Settings** → **Add Record**
-   - Type: TXT | Name: @ | Value: `google-site-verification=...` | TTL: 60
-   - Wait 5–30 min, then click Verify in Search Console
-4. After verification → **Sitemaps** → submit `https://yourdomain.com/sitemap.xml`
+1. Go to the modrynstudio.com Domain property -> **Sitemaps**
+2. Submit https://modrynstudio.com/tools/[slug]/sitemap.xml
 
-**Optional — per-tool URL Prefix property:**
-If you want isolated search performance data per tool (mirrors GA4 per-tool properties), add a **URL Prefix** property for the tool path (e.g. `https://yourdomain.com/tools/mytool`). Verification is automatic when the parent Domain property is already verified. Submit the tool's sitemap to this property too.
+**Optional - per-tool URL Prefix property:**
+Add a **URL Prefix** property for https://modrynstudio.com/tools/[slug] for isolated search performance data per tool. Verification is automatic under the parent Domain property. Submit the tool sitemap to this property too.
 ### Bing Webmaster Tools
 1. Go to https://www.bing.com/webmasters
 2. Sign in with Microsoft account
-3. Select **Import from Google Search Console** — pulls your site and sitemap automatically
+3. Select **Import from Google Search Console** â€” pulls your site and sitemap automatically
 4. Done (also covers Yahoo and DuckDuckGo which use Bing's index)
 
 ## Step 3: Validation
 Tell me to check these once the site is deployed.
 
-> **Use the direct Vercel URL for all validation tools** (e.g. https://yourapp.vercel.app/tools/yourtool), not the canonical modrynstudio.com URL. The root path /tools/yourtool on modrynstudio.com is served by modryn-studio-v2’s static page -- your Next.js app only serves sub-paths via rewrite. The Vercel URL always serves your actual app.
+> **Use the direct Vercel URL for all validation tools** (e.g. https://yourapp.vercel.app/tools/yourtool), not the canonical modrynstudio.com URL. The root path /tools/yourtool on modrynstudio.com is served by modryn-studio-v2â€™s static page -- your Next.js app only serves sub-paths via rewrite. The Vercel URL always serves your actual app.
 
-- **OG preview:** https://opengraph.xyz -- paste **direct Vercel URL**, verify title 50–60 chars, description 110–160 chars, image 1200×630
-- **JSON-LD:** https://search.google.com/test/rich-results -- paste **direct Vercel URL**, should show “1 valid item detected”
+- **OG preview:** https://opengraph.xyz -- paste **direct Vercel URL**, verify title 50â€“60 chars, description 110â€“160 chars, image 1200Ã—630
+- **JSON-LD:** https://search.google.com/test/rich-results -- paste **direct Vercel URL**, should show â€œ1 valid item detectedâ€
 - **DNS propagation:** https://www.whatsmydns.net -- check TXT record has propagated
+
+
+
+
+
+
+

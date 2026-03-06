@@ -1,7 +1,7 @@
----
+﻿---
 name: launch
-description: "Distribution checklist: sharing hooks, dynamic OG images, social footer, community posting guide."
-agent: ask
+description: "Distribution checklist: sharing hooks, social footer, share-on-X hooks, and community posting guide."
+agent: agent
 ---
 # Launch Distribution
 
@@ -12,6 +12,8 @@ Run this after `/seo` (which handles technical SEO). This covers getting eyes on
 ## Step 0: Auto-Fix Codebase
 
 Check and implement the following if missing:
+
+> **Runs after `/seo`**  OG images (homepage + per-page), `twitter:site` handle, sitemap dates, `robots.ts`, `manifest.ts`, and `site-schema.tsx` are all handled by `/seo`. Do not re-do them here.
 
 **`site.ts` social block** — if `site.social` is missing or contains TODO values, populate it from the Social Profiles section of `context.md`:
 ```ts
@@ -24,17 +26,6 @@ social: {
 ```
 If `context.md` has no social profiles filled in, ask the user for their X/Twitter handle before proceeding.
 
-**`twitter:site` in `layout.tsx`** — if `twitter.site` is missing from the Twitter card metadata, add it:
-```ts
-twitter: {
-  card: 'summary_large_image',
-  site: site.social.twitterHandle,
-  title: site.ogTitle,
-  description: site.ogDescription,
-  images: ['/og-image.png'],
-},
-```
-
 **Footer social links** — check whether the site footer includes links to the social profiles in `site.social`. If not, add `<a>` tags for X/Twitter and GitHub at minimum. Use `site.social.*` as the source — never hardcode URLs. Example:
 ```tsx
 <a href={site.social.twitter} target="_blank" rel="noopener noreferrer">X</a>
@@ -44,38 +35,6 @@ twitter: {
 **Modryn Studio footer credit** — check whether the footer copyright includes a link to `modrynstudio.com`. If not, update it:
 ```tsx
 © {new Date().getFullYear()} {site.name} · <a href="https://modrynstudio.com" target="_blank" rel="noopener noreferrer">Modryn Studio</a>
-```
-
-**Dynamic OG images** — check whether `src/app/opengraph-image.tsx` exists. If not, create it using `next/og` `ImageResponse`. Also check key non-home pages (e.g. `/how-it-works`, `/about`, any tool/product page) — if they only inherit the root OG image, generate per-page `opengraph-image.tsx` files with headlines that match each page's purpose:
-```tsx
-import { ImageResponse } from 'next/og';
-import { site } from '@/config/site';
-
-// IMPORTANT: Remove `export const runtime = 'edge'` if this image reads from the
-// filesystem (e.g. MDX files, JSON content directories). Edge runtime cannot use
-// Node.js APIs — use it only for purely static OG images that don't read files.
-export const runtime = 'edge';
-export const size = { width: 1200, height: 630 };
-export const contentType = 'image/png';
-
-export default async function Image() {
-  return new ImageResponse(
-    (
-      <div style={{ background: site.bg, width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', fontFamily: 'sans-serif' }}>
-        <div style={{ fontSize: 58, fontWeight: 700, color: '#ffffff', textAlign: 'center', lineHeight: 1.1, marginBottom: 24 }}>
-          {/* page-specific headline */}
-        </div>
-        <div style={{ fontSize: 22, color: '#a1a1aa', textAlign: 'center', maxWidth: 700 }}>
-          {/* page-specific subtext */}
-        </div>
-        <div style={{ position: 'absolute', bottom: 40, right: 60, fontSize: 18, color: site.accent, fontWeight: 600 }}>
-          {/* domain — e.g. site.url.replace('https://', '') */}
-        </div>
-      </div>
-    ),
-    { ...size },
-  );
-}
 ```
 
 **Sharing hook at outcome** — check the success / done state of the main user flow (the screen shown after the core action completes). If there is no share button or link, add a pre-filled X/Twitter share link:
@@ -108,28 +67,15 @@ const faqSchema = {
 <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 ```
 
-**Sitemap `lastModified` dates** — open `sitemap.ts` and check whether any route uses `lastModified: new Date()`. If found, replace each occurrence with a static date matching when that page's content last meaningfully changed. Using `new Date()` tells Google every page changed on every crawl — it wastes crawl budget and degrades freshness signals:
-```ts
-// BAD — reports a new change on every crawl
-{ url: `${site.url}/about`, lastModified: new Date() }
-
-// GOOD — static date matching when the page content last changed
-{ url: `${site.url}/about`, lastModified: new Date('2025-01-01') }
-```
-For routes that resolve from MDX/JSON files, derive `lastModified` from each file's frontmatter `date` field. For the home page, use the date of the most recent meaningful content update. Ask the user to confirm dates before writing.
 
 Report what was created vs already existed.
 
 ## Step 1: Audit
 - [ ] `site.ts` has `social` block with real values (no TODOs)
-- [ ] `layout.tsx` Twitter card has `site` handle
 - [ ] Footer has X/Twitter + GitHub links from `site.social`
 - [ ] Footer has Modryn Studio credit linking to modrynstudio.com
-- [ ] `src/app/opengraph-image.tsx` exists with correct title/desc
-- [ ] Key pages beyond home have per-page `opengraph-image.tsx`
 - [ ] Main flow success/done state has a share link
 - [ ] Educational/FAQ pages have FAQPage JSON-LD
-- [ ] `sitemap.ts` uses static `lastModified` dates (not `new Date()`)
 - [ ] Product screenshots referenced in `site.ts` or content JSON are rendered in the landing page (not just stored in `public/`)
 
 Report PASS / WARN / MISSING for each.
@@ -137,8 +83,8 @@ Report PASS / WARN / MISSING for each.
 ## Step 2: Launch Distribution Playbook
 
 ### Day 0 — Prep (before going live)
-1. **Build log post** — Run `/log` from this repo. Opens a PR against modryn-studio-v2. Merge before posting anywhere so links don't 404.
-2. **Update tool entry** — Run `/tool` from this repo. Opens a PR against modryn-studio-v2 to set status to `live`, add URL, screenshot, and launch date. Merge alongside the log PR.
+1. **Launch log post**  Run `/log` from this repo. This is the launch post  distinct from any build logs posted during Phase 2. Opens a PR against modryn-studio-v2. Merge before posting anywhere so links don't 404.
+2. **Flip tool to live**  Run `/tool` from this repo with `status: "live"`. This is always required at launch even if you ran `/tool` earlier with `status: "building"`. Opens a PR against modryn-studio-v2. Merge alongside the log PR.
 3. **Social copy** — After both PRs are merged, switch to modryn-studio-v2 and run `/social` with the merged log post. That repo has the voice rules — `/social` must run there, not here.
 4. **Queue content** — Draft your Reddit posts (one per target subreddit from this project's tool JSON `subreddits` field). Don't post yet.
 
@@ -159,8 +105,11 @@ Post in this order, 30–60 min apart:
 2. **pSEO seed** — If the product has comparison or "best X for Y" potential, create 1–2 programmatic pages. These take 2–4 months to rank but compound. Don't skip this step.
 3. **Hacker News** — Only if you have a genuine technical insight to share (not a product plug). "Show HN" with a paragraph about the interesting technical decision, link to the tool.
 
+> **Requires a live URL.** Run `/deploy` in modryn-studio-v2 first if you haven't already.
+
 ## Step 3: Validation
 Check these are live before posting anywhere:
 - **OG preview:** https://opengraph.xyz — paste the live URL, image loads correctly, title/desc match
 - **Share link test:** open your pre-filled X share URL in a browser — confirm it pre-fills correctly
 - **FAQPage schema:** https://search.google.com/test/rich-results — should show FAQ rich result if implemented
+
