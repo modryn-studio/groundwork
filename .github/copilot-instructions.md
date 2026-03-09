@@ -14,7 +14,7 @@ url:  <!-- canonical URL -->
 basePath: <!-- /tools/your-slug   (empty for standalone modes) -->
 
 ## Stack
-- Next.js 15 (App Router) with TypeScript
+- Next.js 16 (App Router) with TypeScript
 - Tailwind CSS for styling
 - Vercel for deployment
 - GA4 for custom event tracking (via `@/lib/analytics.ts` — never call `gtag()` directly)
