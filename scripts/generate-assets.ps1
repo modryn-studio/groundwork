@@ -1,6 +1,7 @@
-﻿# scripts/generate-assets.ps1
+# scripts/generate-assets.ps1
 # ------------------------------------------------------------------------------
-# Generates all favicon, icon, and README banner assets from your logomark.
+# Generates all favicon, icon, README banner, and palette assets from your
+# logomark and brand colors.
 # Run from the project root after cloning, and again after any logomark or
 # site.ts update.
 #
@@ -35,6 +36,7 @@
 #   public/icon-light.png             Favicon for light mode
 #   public/icon-dark.png              Favicon for dark mode
 #   public/brand/banner.png           1280x320 README banner (if not already provided)
+#   public/brand/palette.png          1000x180 brand color swatch sheet
 #
 #   OG image is handled at build time by src/app/opengraph-image.tsx - not a static file.
 #
@@ -157,10 +159,58 @@ if (Test-Path $banner) {
     Write-Host "  + public/brand/banner.png (auto-generated)"
 }
 
+# -- palette.png - brand color swatches ----------------------------------------
+# Reads the 5 color tokens from globals.css @theme and generates a swatch sheet.
+# Re-run any time you update colors in globals.css.
+# Outputs: public/brand/palette.png  (1000x180px, 5 swatches side by side)
+$cssPath = "src\app\globals.css"
+if (Test-Path $cssPath) {
+    $css = Get-Content $cssPath -Raw
+    $tokenMap = [ordered]@{
+        '--color-accent'    = 'Accent'
+        '--color-secondary' = 'Secondary'
+        '--color-bg'        = 'Background'
+        '--color-text'      = 'Text'
+        '--color-muted'     = 'Muted'
+    }
+    $palette = [ordered]@{}
+    foreach ($token in $tokenMap.Keys) {
+        $pattern = [regex]::Escape($token) + '\s*:\s*(#[0-9a-fA-F]{3,8})'
+        $m = [regex]::Match($css, $pattern)
+        if ($m.Success) { $palette[$tokenMap[$token]] = $m.Groups[1].Value }
+    }
+
+    if ($palette.Count -eq 5) {
+        $tmpFiles = @()
+        $idx = 0
+        foreach ($label in $palette.Keys) {
+            $hex = $palette[$label]
+            $out = "tmp_sw_$idx.png"
+            $tmpFiles += $out
+            # Each swatch: 200x180 — top 120px solid color, bottom 60px cream label strip
+            magick `
+                '(' -size 200x120 xc:"$hex" ')' `
+                '(' -size 200x60 xc:'#FFFAF5' `
+                    -font 'Arial-Bold' -pointsize 13 -fill '#1C1410' `
+                    -gravity North -annotate '+0+8' "$label" `
+                    -font 'Arial' -pointsize 11 -fill '#9C8070' `
+                    -gravity South -annotate '+0+10' "$hex" ')' `
+                -append "$out"
+            $idx++
+        }
+        magick $tmpFiles +append "public\brand\palette.png"
+        $tmpFiles | Remove-Item -ErrorAction SilentlyContinue
+        Write-Host "  + public/brand/palette.png"
+    } else {
+        Write-Host "  ~ public/brand/palette.png (skipped — $($palette.Count)/5 color tokens found in globals.css)" -ForegroundColor DarkGray
+    }
+} else {
+    Write-Host "  ~ public/brand/palette.png (skipped — globals.css not found)" -ForegroundColor DarkGray
+}
+
 Write-Host ""
 Write-Host "  Done." -ForegroundColor Green
 if ($siteName -eq "Your Site") {
     Write-Host "  Tip: fill in src/config/site.ts then re-run to stamp your site name on the banner." -ForegroundColor DarkGray
 }
 Write-Host ""
-
