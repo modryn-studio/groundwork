@@ -119,17 +119,27 @@ Use when you need dynamic pricing, coupons, or programmatic control.
 
 ---
 
-## Wire Layout (FeedbackWidget + Analytics)
+## Wire Layout (PostHogProvider + FeedbackWidget + Analytics)
 
-Wire `FeedbackWidget` and analytics into `src/app/layout.tsx`:
+Wire `PostHogProvider`, `FeedbackWidget`, and analytics into `src/app/layout.tsx`:
 
 - Add these imports at the top:
   ```tsx
   import { Analytics } from '@vercel/analytics/next';
   import { GoogleAnalytics } from '@next/third-parties/google';
   import FeedbackWidget from '@/components/feedback-widget';
+  import { PostHogProvider } from '@/components/posthog-provider';
   ```
-- Add `<Analytics />` and `<FeedbackWidget />` as the last children inside `<body>`, before `</body>`
+- Wrap the contents of `<body>` with `<PostHogProvider>` and add `<Analytics />` and `<FeedbackWidget />` as the last children inside the provider:
+  ```tsx
+  <body>
+    <PostHogProvider>
+      {children}
+      <Analytics />
+      <FeedbackWidget />
+    </PostHogProvider>
+  </body>
+  ```
 - Add `<GoogleAnalytics>` **outside** `<body>` but inside `<html>`, conditioned on the env var:
   ```tsx
   {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
@@ -193,6 +203,7 @@ Check if `.env.local` already exists. If it does not:
   Copy-Item .env.local.example .env.local
   ```
 - All values will be blank. Flag each one Luke needs to fill in before the app will work:
+  - `NEXT_PUBLIC_POSTHOG_KEY` — same key for all Modryn Studio projects: `phc_PAwKHtpHlcESx2yOlqF4BFLjvj3KM5IyduH3Q1RzWqa`. Also add to Vercel → Settings → Environment Variables
   - `NEXT_PUBLIC_GA_MEASUREMENT_ID` — from Google Analytics → Admin → Data Streams
   - `GMAIL_USER` / `GMAIL_APP_PASSWORD` — Gmail address + App Password (not account password)
   - `RESEND_API_KEY` / `RESEND_SEGMENT_ID` — from resend.com → API Keys / Segments

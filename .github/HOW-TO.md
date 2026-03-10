@@ -183,9 +183,9 @@ src/config/
 src/lib/
 ├── cn.ts                          ← Tailwind class merge utility
 ├── route-logger.ts                ← API route logging (createRouteLogger)
-└── analytics.ts                   ← GA4 event tracking (analytics.track)
-scripts/
-└── generate-assets.ps1            ← Asset generator (run via /assets)
+└── analytics.ts                   ← GA4 + PostHog event tracking (analytics.track)
+src/components/
+└── posthog-provider.tsx           ← PostHog provider + pageview tracking (wraps layout)
 context.md                         ← SOURCE OF TRUTH: product, stack, routes, monetization
 brand.md                           ← SOURCE OF TRUTH: voice, visuals, user types, copy
 development-principles.md          ← SOURCE OF TRUTH: product philosophy (permanent)
