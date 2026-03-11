@@ -88,7 +88,19 @@ Now build the one killer feature. Wire the complete flow end-to-end — from use
 
 **Before a major implementation:**
 
-Run `/validate` with a focus area: "validate my approach to the intake flow" or "validate the payment integration plan." You tell it what to focus on — it researches and challenges your assumptions before you build.
+Run `/validate` with a focus area. The mechanics matter — this only works correctly in **Agent mode**:
+
+1. Type `/validate` in the chat input — VS Code will show a dropdown suggesting the prompt. Select it so the prompt file actually loads.
+2. In the **same message**, after the slash command, add your focus question.
+3. Submit. The agent runs the full prompt file + your focus question with live web search.
+
+Example messages:
+
+- `/validate — validate my approach to the [feature] before I build it. Is this the right pattern for this user type?`
+- `/validate — validate whether the pricing is still in the right range given what competitors are doing`
+- `/validate — validate my plan to build [feature] next. What should I know about how competitors handle this?`
+
+**If the output looks entirely offline** (no fetched URLs, no live competitor data cited): you're in Ask or Plan mode, not Agent mode. Switch to Agent and run again.
 
 **When you're stuck:**
 
@@ -137,19 +149,19 @@ You have a working core feature. Now loop: ship → validate → distribute → 
 
 ### Reusable vs. One-Time Commands
 
-| Command     | Frequency | What it does                                                                 |
-| ----------- | --------- | ---------------------------------------------------------------------------- |
-| `/setup`    | Once      | Fills `copilot-instructions.md` + `site.ts` from source docs                 |
-| `/update`   | Reusable  | Cascades source doc edits into derived files                                 |
-| `/validate` | Reusable  | Validates context + brand against live data. Use focused: "validate X"       |
-| `/assets`   | Reusable  | Generates favicons, icons, banner from logomark                              |
-| `/tool`     | Reusable  | Registers/updates tool on modrynstudio.com (`building` → `live`)             |
-| `/log`      | Reusable  | Drafts a build log post — run at every milestone                             |
-| `/deps`     | Reusable  | Validates dependencies against live docs                                     |
-| `/seo`      | Once      | SEO audit + Search Console + Bing setup                                      |
-| `/launch`   | Once      | Distribution checklist: sharing hooks, OG, social prep                       |
-| `@check`    | Reusable  | Quality gate: bugs, secrets, lint, build → auto-fixes, commits. Never pushes |
-| `@prebuilt` | Once      | Pre-build discovery: researches market, fills `context.md` + `brand.md`      |
+| Command     | Frequency | What it does                                                                                                                                                          |
+| ----------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/setup`    | Once      | Fills `copilot-instructions.md` + `site.ts` from source docs                                                                                                          |
+| `/update`   | Reusable  | Cascades source doc edits into derived files                                                                                                                          |
+| `/validate` | Reusable  | Reads `context.md`, `brand.md`, `strategy.md` + web-searches to validate. **Agent mode only.** Phase 1: run open-ended. Phase 4+: add focus question in same message. |
+| `/assets`   | Reusable  | Generates favicons, icons, banner from logomark                                                                                                                       |
+| `/tool`     | Reusable  | Registers/updates tool on modrynstudio.com (`building` → `live`)                                                                                                      |
+| `/log`      | Reusable  | Drafts a build log post — run at every milestone                                                                                                                      |
+| `/deps`     | Reusable  | Validates dependencies against live docs                                                                                                                              |
+| `/seo`      | Once      | SEO audit + Search Console + Bing setup                                                                                                                               |
+| `/launch`   | Once      | Distribution checklist: sharing hooks, OG, social prep                                                                                                                |
+| `@check`    | Reusable  | Quality gate: bugs, secrets, lint, build → auto-fixes, commits. Never pushes                                                                                          |
+| `@prebuilt` | Once      | Pre-build discovery: researches market, fills `context.md` + `brand.md`                                                                                               |
 
 > **modryn-studio-v2 only:** `/deploy` and `/social` exist only in that repo. Switch workspaces to run them.
 
