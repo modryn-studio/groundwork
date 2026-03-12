@@ -84,7 +84,7 @@ Now build the one killer feature. Wire the complete flow end-to-end — from use
 
 Wire the complete loop end-to-end before polishing any single piece. One real order through the whole system beats a perfect intake with no delivery.
 
-Open `context.md` → find `## Minimum Money Loop` → keep it visible. Every build session, ask: *does this work advance the loop, or is it polish?*
+Open `context.md` → find `## Minimum Money Loop` → keep it visible. Every build session, ask: _does this work advance the loop, or is it polish?_
 
 **Hard rule: do not touch the landing page until the loop has run once with a real order.**
 
@@ -247,9 +247,11 @@ Or run directly (requires [ImageMagick](https://imagemagick.org)):
 .github/
 ├── copilot-instructions.md          ← Always-on context (derived — edit source docs, not this)
 ├── instructions/
-│   ├── nextjs.instructions.md       ← Auto-applied to .ts/.tsx files
-│   ├── seo.instructions.md          ← Auto-applied to .ts/.tsx files
-│   └── design-system.instructions.md ← Auto-applied to .tsx files (primitives, brand tokens, responsive)
+│   ├── nextjs.instructions.md           ← Auto-applied to .ts/.tsx files
+│   ├── seo.instructions.md              ← Auto-applied to .ts/.tsx files
+│   ├── design-system.instructions.md   ← Auto-applied to .tsx files (primitives, brand tokens, responsive)
+│   ├── file-writes.instructions.md     ← Applied to all files
+│   └── writing.instructions.md         ← Auto-applied to .mdx files
 ├── agents/
 │   ├── check.agent.md               ← @check agent (quality gate — reusable)
 │   └── prebuilt.agent.md            ← @prebuilt agent (pre-build discovery)
