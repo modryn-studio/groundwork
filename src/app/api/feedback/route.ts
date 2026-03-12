@@ -85,14 +85,15 @@ export async function POST(req: Request): Promise<Response> {
       to: feedbackTo,
       subject: subjectMap[body.type],
       html: buildHtml(body),
+      // replyTo lets you hit Reply in Gmail and go straight to the user
+      ...(hasEmail && { replyTo: body.email }),
     });
 
     log.info(ctx.reqId, 'Email sent', { to: feedbackTo });
 
     // Add to Resend Contacts for newsletter signups (best-effort — never blocks the response)
-    // Contacts are tagged with a "source" property so all projects stay filterable
-    // in the shared Resend team. Requires a "source" property (string) pre-created in
-    // Resend → Audience → Properties before it will be stored on the contact.
+    // Contacts are tagged with source=site.name so all projects are filterable
+    // in the shared Resend account audience without needing separate segments.
     if (body.type === 'newsletter') {
       const resendKey = process.env.RESEND_API_KEY;
       if (resendKey) {
