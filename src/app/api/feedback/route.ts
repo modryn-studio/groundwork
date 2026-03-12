@@ -90,6 +90,9 @@ export async function POST(req: Request): Promise<Response> {
     log.info(ctx.reqId, 'Email sent', { to: feedbackTo });
 
     // Add to Resend Contacts for newsletter signups (best-effort — never blocks the response)
+    // Contacts are tagged with a "source" property so all projects stay filterable
+    // in the shared Resend team. Requires a "source" property (string) pre-created in
+    // Resend → Audience → Properties before it will be stored on the contact.
     if (body.type === 'newsletter') {
       const resendKey = process.env.RESEND_API_KEY;
       if (resendKey) {
@@ -100,8 +103,9 @@ export async function POST(req: Request): Promise<Response> {
             email: body.email!,
             unsubscribed: false,
             ...(segmentId && { segments: [{ id: segmentId }] }),
+            properties: { source: site.name },
           });
-          log.info(ctx.reqId, 'Resend contact created', { segmentId });
+          log.info(ctx.reqId, 'Resend contact created', { segmentId, source: site.name });
         } catch (resendError) {
           // Non-fatal — inbox notification already sent, list add failed silently
           log.warn(ctx.reqId, 'Resend contact creation failed', { error: resendError });
