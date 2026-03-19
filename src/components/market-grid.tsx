@@ -37,22 +37,25 @@ export function MarketGrid({ markets, selected, onSelect }: MarketGridProps) {
               'min-h-[100px] cursor-pointer',
               isSelected
                 ? 'border-accent bg-accent/5'
-                : 'border-border bg-surface hover:border-accent/50',
+                : 'border-border bg-surface hover:border-accent/50'
             )}
           >
             {isSelected && (
-              <span className="absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-accent">
+              <span className="bg-accent absolute top-3 right-3 flex h-5 w-5 items-center justify-center rounded-full">
                 <Check size={12} className="text-white" strokeWidth={3} />
               </span>
             )}
-            <span className="font-heading text-sm font-semibold text-text">{market.name}</span>
-            <span className="text-[13px] leading-relaxed text-muted">{market.description}</span>
+            <span className="font-heading text-text text-sm font-semibold">{market.name}</span>
+            <span className="text-muted text-[13px] leading-relaxed">{market.description}</span>
             {market.tags.length > 0 && (
               <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
                 {market.tags.map((tag) => (
                   <span
                     key={tag}
-                    className={cn('border px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide', tagStyles[tag])}
+                    className={cn(
+                      'border px-1.5 py-0.5 font-mono text-[10px] tracking-wide uppercase',
+                      tagStyles[tag]
+                    )}
                   >
                     {tagLabels[tag]}
                   </span>

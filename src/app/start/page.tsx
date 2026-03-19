@@ -12,15 +12,12 @@ export default function StartPage() {
   const [ideas, setIdeas] = useState<DumpedIdea[]>([]);
 
   return (
-    <main className="min-h-screen bg-bg px-4 pb-32 pt-16 sm:px-6">
+    <main className="bg-bg min-h-screen px-4 pt-16 pb-32 sm:px-6">
       <div className="mx-auto max-w-3xl">
-
         {/* Header */}
         <div className="mb-10">
-          <h1 className="font-heading text-2xl font-bold text-text sm:text-3xl">
-            Pick a market.
-          </h1>
-          <p className="mt-2 text-[15px] text-muted">
+          <h1 className="font-heading text-text text-2xl font-bold sm:text-3xl">Pick a market.</h1>
+          <p className="text-muted mt-2 text-[15px]">
             Choose one you care about. That&apos;s step one.
           </p>
         </div>
@@ -34,12 +31,12 @@ export default function StartPage() {
 
         {/* Idea dump */}
         <div className="mt-14">
-          <p className="mb-4 text-[13px] uppercase tracking-widest text-muted">
+          <p className="text-muted mb-4 text-[13px] tracking-widest uppercase">
             Not sure which market? Dump your ideas.
           </p>
           <IdeaDump onIdeasChange={setIdeas} />
           {ideas.length > 0 && !selectedMarket && (
-            <p className="mt-4 text-[13px] text-muted">
+            <p className="text-muted mt-4 text-[13px]">
               Pick a market above — or run the pipeline and let it find one from your ideas.
             </p>
           )}
@@ -49,23 +46,18 @@ export default function StartPage() {
       {/* Sticky CTA — always visible once market is selected */}
       <div
         className={cn(
-          'fixed inset-x-0 bottom-0 border-t border-border bg-bg transition-transform duration-200',
-          selectedMarket ? 'translate-y-0' : 'translate-y-full',
+          'border-border bg-bg fixed inset-x-0 bottom-0 border-t transition-transform duration-200',
+          selectedMarket ? 'translate-y-0' : 'translate-y-full'
         )}
       >
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <div className="flex flex-col">
-            <span className="text-[11px] uppercase tracking-widest text-muted">Selected</span>
-            <span className="font-heading text-sm font-semibold text-text">
+            <span className="text-muted text-[11px] tracking-widest uppercase">Selected</span>
+            <span className="font-heading text-text text-sm font-semibold">
               {selectedMarket?.name}
             </span>
           </div>
-          <Button
-            type="button"
-            disabled
-            title="Pipeline coming soon"
-            className="rounded-none px-6"
-          >
+          <Button type="button" disabled title="Pipeline coming soon" className="rounded-none px-6">
             Run pipeline →
           </Button>
         </div>

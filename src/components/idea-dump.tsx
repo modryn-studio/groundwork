@@ -46,7 +46,7 @@ export function IdeaDump({ onIdeasChange }: IdeaDumpProps) {
     const stored = loadIdeas();
     setIdeas(stored);
     onIdeasChange?.(stored);
-  }, []);// eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Voice input setup
   useEffect(() => {
@@ -125,16 +125,16 @@ export function IdeaDump({ onIdeasChange }: IdeaDumpProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Input area */}
-      <div className="border border-border bg-surface">
+      <div className="border-border bg-surface border">
         <Textarea
           ref={textareaRef}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={isListening ? 'listening…' : "what's on your mind?"}
-          className="h-32 w-full resize-none border-none bg-transparent p-4 text-[15px] text-text placeholder:text-muted/50 focus:outline-none focus-visible:ring-0"
+          className="text-text placeholder:text-muted/50 h-32 w-full resize-none border-none bg-transparent p-4 text-[15px] focus:outline-none focus-visible:ring-0"
         />
-        <div className="flex items-center justify-between border-t border-border/50 px-3 py-2">
+        <div className="border-border/50 flex items-center justify-between border-t px-3 py-2">
           <div>
             {speechSupported && (
               /* Exception: circular icon button — raw <button> per design system rules */
@@ -146,7 +146,7 @@ export function IdeaDump({ onIdeasChange }: IdeaDumpProps) {
                   'flex h-8 w-8 items-center justify-center rounded-full transition-colors',
                   isListening
                     ? 'bg-red-500/20 text-red-400'
-                    : 'text-muted hover:bg-surface hover:text-text',
+                    : 'text-muted hover:bg-surface hover:text-text'
                 )}
               >
                 {isListening ? <MicOff size={15} /> : <Mic size={15} />}
@@ -157,7 +157,7 @@ export function IdeaDump({ onIdeasChange }: IdeaDumpProps) {
             type="button"
             onClick={handleSubmit}
             disabled={!content.trim()}
-            className="font-mono text-sm text-muted transition-colors hover:text-text disabled:cursor-not-allowed disabled:opacity-30"
+            className="text-muted hover:text-text font-mono text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-30"
           >
             {saved ? 'saved' : 'dump'}
           </button>
@@ -172,17 +172,17 @@ export function IdeaDump({ onIdeasChange }: IdeaDumpProps) {
               key={idea.id}
               onMouseEnter={() => setHoveredId(idea.id)}
               onMouseLeave={() => setHoveredId(null)}
-              className="group flex items-start justify-between gap-3 border border-transparent px-3 py-2.5 hover:border-border hover:bg-surface"
+              className="group hover:border-border hover:bg-surface flex items-start justify-between gap-3 border border-transparent px-3 py-2.5"
             >
-              <span className="text-[14px] leading-relaxed text-text/80">{idea.content}</span>
+              <span className="text-text/80 text-[14px] leading-relaxed">{idea.content}</span>
               <button
                 type="button"
                 onClick={() => deleteIdea(idea.id)}
                 aria-label="Delete idea"
                 className={cn(
-                  'mt-0.5 flex-shrink-0 text-muted transition-opacity',
+                  'text-muted mt-0.5 flex-shrink-0 transition-opacity',
                   hoveredId === idea.id ? 'opacity-100' : 'opacity-0',
-                  'hover:text-text',
+                  'hover:text-text'
                 )}
               >
                 <X size={14} />

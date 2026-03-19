@@ -68,10 +68,13 @@ A solo developer with an idea (or a market they care about) who wants to start b
 | ---------- | ------- | ------------------------------------------- |
 | Accent     | #F97415 | Amber — action, progress, CTAs              |
 | Secondary  | #3B82F6 | Blue — checkpoint cards, decision prompts   |
-| Background | #050505 | Near-black — base                           |
+| Background | #0d0d0d | Dark gray — base                            |
 | Text       | #E5E5E5 | Off-white — body text                       |
-| Muted      | #444444 | Borders, placeholders, stage labels         |
+| Muted      | #666666 | Placeholders, labels, secondary text        |
+| Surface    | #161616 | Panel/card backgrounds                      |
+| Border     | #222222 | Separators, card outlines                   |
 Amber = forward motion. Blue = your turn (checkpoint UI only). Never red except errors.
+Base layer is achromatic — color only appears to signal action (amber) or handoff (blue).
 
 **Emotional Arc**
 - Land: "This is the thing I've been doing manually in a conversation with ChatGPT"

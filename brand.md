@@ -32,20 +32,23 @@ A solo builder who has an idea (or a market they already care about) and wants t
 
 ## Color System
 
-Five named slots — fill all before running `/setup`. These become the `@theme` tokens in `globals.css`.
+Seven named slots — these become the `@theme` tokens in `globals.css`.
 
 | Name       | Hex     | Role                                                     |
 | ---------- | ------- | -------------------------------------------------------- |
 | Accent     | #F97415 | Amber — action, progress, CTAs. Matches Modryn Studio.   |
 | Secondary  | #3B82F6 | Blue — checkpoint cards, decision prompts, informational |
-| Background | #050505 | Near-black — matches studio base                         |
+| Background | #0d0d0d | Dark gray — not pure black. Gives surfaces room to breathe. |
 | Text       | #E5E5E5 | Off-white — readable on dark                             |
-| Muted      | #444444 | Borders, placeholders, stage labels                      |
+| Muted      | #666666 | Placeholders, labels, secondary text. Readable on dark bg. |
+| Surface    | #161616 | Panel and card backgrounds. Subtle lift from base.       |
+| Border     | #222222 | Separators, card outlines. Visible but not loud.         |
 
 Color rules:
 
-- Accent amber is inherited from Modryn Studio — this tool lives in the studio, it should feel like part of the same system.
-- Secondary blue is reserved for checkpoint / decision UI only. When the pipeline pauses and asks a question, the card turns blue. This creates a visual pattern: amber = forward motion, blue = your turn.
+- Accent amber is inherited from Modryn Studio — this tool lives in the studio, it should feel like part of the same system. Use it sparingly: CTAs, progress indicators, selected states. The less often it appears, the more it means.
+- Secondary blue is reserved for checkpoint / decision UI only. When the pipeline pauses and asks a question, the card turns blue. Amber = forward motion, blue = your turn.
+- The base layer (bg, surface, border, muted) is intentionally achromatic — grays only. Color only appears when it signals something: action (amber) or handoff (blue).
 - Never use red except for error states.
 
 ---

@@ -3,11 +3,11 @@
 @theme {
   --color-accent: #f97415; /* Amber — action, progress, CTAs */
   --color-secondary: #3b82f6; /* Blue — checkpoint cards, decision prompts */
-  --color-bg: #050505; /* Near-black — base background */
+  --color-bg: #0d0d0d; /* Dark gray — base background */
   --color-text: #e5e5e5; /* Off-white — body text */
-  --color-muted: #444444; /* Borders, placeholders, stage labels */
-  --color-surface: #111111; /* Panel/card backgrounds */
-  --color-border: #1a1a1a; /* Subtle borders */
+  --color-muted: #666666; /* Placeholders, labels, secondary text */
+  --color-surface: #161616; /* Panel/card backgrounds */
+  --color-border: #222222; /* Separators, card outlines */
   --font-heading: var(--font-space-grotesk); /* Space Grotesk */
 }
 
