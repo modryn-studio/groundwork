@@ -9,6 +9,7 @@ applyTo: '**/*.tsx'
 Every element that requires mental processing is a tax on the user. Keep it zero.
 
 **Hard rules for TSX:**
+
 - One primary action per screen. If a component introduces a second, push back.
 - No `<p>` or `<span>` copy that explains how the UI works — the UI explains itself.
 - No tooltips. Redesign the element if you think you need one.
@@ -90,10 +91,8 @@ useEffect(() => {
 
 // Apply to the fixed wrapper — style= is needed because Tailwind can't handle dynamic values:
 <div className="fixed inset-x-0 bottom-0" style={{ bottom: keyboardOffset }}>
-  <div className="pb-[calc(1rem+env(safe-area-inset-bottom))]">
-    {/* inputs here */}
-  </div>
-</div>
+  <div className="pb-[calc(1rem+env(safe-area-inset-bottom))]">{/* inputs here */}</div>
+</div>;
 ```
 
 ## Touch Targets
@@ -106,5 +105,5 @@ Use `cn()` from `@/lib/cn` when combining base classes with conditional or overr
 
 ```tsx
 import { cn } from '@/lib/cn';
-<div className={cn('base-classes', condition && 'conditional-class', className)} />
+<div className={cn('base-classes', condition && 'conditional-class', className)} />;
 ```

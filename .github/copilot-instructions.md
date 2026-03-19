@@ -1,19 +1,22 @@
 # Groundwork — Copilot Context
 
 ## Who I Am
+
 I'm Luke Hanner — a solo developer who ships AI-assisted tools fast, tests against real demand, and focuses on micro-niches. Groundwork is an idea-to-spec pipeline for solo builders who already know how to code. Dump your ideas. The pipeline identifies the market, researches what people already pay for, surfaces the competitive gap, and guides you through three decisions. You get a completed `context.md` + `brand.md`, ready to drop into the boilerplate and run `/setup`.
 
 ## Deployment
+
 <!-- Filled in by /setup from context.md.
      Read this before touching next.config.ts, BASE_PATH, site.ts, or any hardcoded URL.
      If mode is modryn-app:         basePath must stay set in next.config.ts.
      If mode is standalone-*:       basePath must be absent from next.config.ts. -->
 
 mode: modryn-app
-url:  https://modrynstudio.com/tools/groundwork
+url: https://modrynstudio.com/tools/groundwork
 basePath: /tools/groundwork
 
 ## Stack
+
 - Next.js 16 (App Router) with TypeScript
 - Tailwind CSS for styling
 - Vercel for deployment
@@ -25,6 +28,7 @@ basePath: /tools/groundwork
 - **Backend (not in this repo — separate Railway Python service):** LangGraph, FastAPI, Tavily Python SDK, OpenAI Python SDK, psycopg — see context.md for environment variables
 
 ## Project Structure
+
 ```
 /app                    → Next.js App Router pages
 /app/start              → Market discovery + idea dump intake route
@@ -36,18 +40,21 @@ basePath: /tools/groundwork
 ```
 
 ## Route Map
+
 **Frontend (Next.js)**
-- `/`                      → Landing page: email waitlist signup. Untouched until post-validation.
-- `/start`                 → Idea backlog + market discovery. Persistent idea dump (localStorage). Market grid (13 cards, tagged). "Run pipeline" CTA (disabled until backend is live).
-- `/run/[threadId]`        → Pipeline progress + checkpoint UI; polls backend every 2s; error state handled inline
-- `/privacy`               → Privacy policy
-- `/terms`                 → Terms of service
+
+- `/` → Landing page: email waitlist signup. Untouched until post-validation.
+- `/start` → Idea backlog + market discovery. Persistent idea dump (localStorage). Market grid (13 cards, tagged). "Run pipeline" CTA (disabled until backend is live).
+- `/run/[threadId]` → Pipeline progress + checkpoint UI; polls backend every 2s; error state handled inline
+- `/privacy` → Privacy policy
+- `/terms` → Terms of service
 
 **Backend (FastAPI on Railway — separate repo)**
-- `POST /pipeline/start`          → Accepts `{ ideas: string[] }`. Validate input, create LangGraph thread, return `{ thread_id }`
-- `GET /pipeline/status/:id`      → Return `{ state, stage?, interrupt? }`
-- `POST /pipeline/resume/:id`     → Send user decision via `Command(resume=...)`, return `{ state }`
-- `GET /pipeline/result/:id`      → Return `{ context_md, brand_md }` when complete
+
+- `POST /pipeline/start` → Accepts `{ ideas: string[] }`. Validate input, create LangGraph thread, return `{ thread_id }`
+- `GET /pipeline/status/:id` → Return `{ state, stage?, interrupt? }`
+- `POST /pipeline/resume/:id` → Send user decision via `Command(resume=...)`, return `{ state }`
+- `GET /pipeline/result/:id` → Return `{ context_md, brand_md }` when complete
 
 ## Low Cognitive Load — Non-Negotiables
 
@@ -70,6 +77,7 @@ This is the design philosophy for every screen in Groundwork. The user is a buil
 ## Brand & Voice
 
 **Voice Rules**
+
 - Short sentences. Builders skim. Get to the point.
 - Talk to someone who has started and abandoned too many side projects in the research phase.
 - You already know how to build. This clears the runway.
@@ -79,31 +87,34 @@ This is the design philosophy for every screen in Groundwork. The user is a buil
 A solo developer with an idea (or a market they care about) who wants to start building — not spend a week on research and positioning before touching code. They've done this the hard way before. They know the research is necessary. They don't want to do it manually again. Groundwork doesn't replace their judgment — it does the research and names the decisions so they can make them fast.
 
 **Visual Rules**
+
 - Dark mode only — builder tool, not a SaaS landing page
 - Fonts: Space Grotesk (headings) + Space Mono (pipeline output, doc previews, file names)
 - Motion: Minimal — one subtle progress indicator during pipeline runs only. Nothing decorative.
 - Avoid: No rocket ships, lightbulbs, brain icons, or generic startup visual vocabulary
 
 **Color System**
-| Name       | Hex     | Role                                        |
+| Name | Hex | Role |
 | ---------- | ------- | ------------------------------------------- |
-| Accent     | #F97415 | Amber — action, progress, CTAs              |
-| Secondary  | #3B82F6 | Blue — checkpoint cards, decision prompts   |
-| Background | #0d0d0d | Dark gray — base                            |
-| Text       | #E5E5E5 | Off-white — body text                       |
-| Muted      | #666666 | Placeholders, labels, secondary text        |
-| Surface    | #161616 | Panel/card backgrounds                      |
-| Border     | #222222 | Separators, card outlines                   |
+| Accent | #F97415 | Amber — action, progress, CTAs |
+| Secondary | #3B82F6 | Blue — checkpoint cards, decision prompts |
+| Background | #0d0d0d | Dark gray — base |
+| Text | #E5E5E5 | Off-white — body text |
+| Muted | #666666 | Placeholders, labels, secondary text |
+| Surface | #161616 | Panel/card backgrounds |
+| Border | #222222 | Separators, card outlines |
 Amber = forward motion. Blue = your turn (checkpoint UI only). Never red except errors.
 Base layer is achromatic — color only appears to signal action (amber) or handoff (blue).
 
 **Emotional Arc**
+
 - Land: "This is the thing I've been doing manually in a conversation with ChatGPT"
 - Read: "It actually outputs the files I need, not a summary to screenshot"
 - Scroll: "I want to see what the checkpoint looks like"
 - Convert: "I have an idea right now. I'm running it."
 
 **Copy Reference**
+
 - Hero: "Drop an idea. Get the docs."
 - Sub: "You name the market. Agents find what's already selling. You decide the angle. You get context.md and brand.md, ready to build from."
 - CTA: "Start the pipeline"
@@ -134,6 +145,7 @@ Next.js · TypeScript · Tailwind CSS · Vercel
 ```
 
 Rules:
+
 - **Banner image** — always first. Path is `public/brand/banner.png`.
 - **H1 title** — product name only, no subtitle.
 - **Tagline** — one sentence. What the user gets. No buzzwords ("powerful", "seamless", "AI-powered").
@@ -143,6 +155,7 @@ Rules:
 - **Nothing else.** No install instructions, no contributing section, no architecture diagrams, no screenshots beyond the banner. Real docs go in `/docs` or on the live site.
 
 When adding a badge row (optional, for open source tools/libraries only):
+
 - Place it between the H1 and the tagline
 - Use shields.io format: `[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)`
 - Keep it to 3 badges max: typically license + CI status + live site
@@ -157,23 +170,24 @@ This project uses Tailwind CSS v4. The rules are different from v3 — follow th
 ```css
 /* ✅ correct — generates text-accent, bg-surface, border-border, etc. */
 @theme {
-  --color-accent: #F97415;    /* Amber — action, progress, CTAs */
-  --color-secondary: #3B82F6; /* Blue — checkpoint cards, decision prompts */
-  --color-bg: #050505;        /* Near-black — base background */
-  --color-text: #E5E5E5;      /* Off-white — body text */
-  --color-muted: #444444;     /* Borders, placeholders, stage labels */
-  --color-surface: #111111;   /* Panel/card backgrounds */
-  --color-border: #1A1A1A;    /* Subtle borders */
+  --color-accent: #f97415; /* Amber — action, progress, CTAs */
+  --color-secondary: #3b82f6; /* Blue — checkpoint cards, decision prompts */
+  --color-bg: #050505; /* Near-black — base background */
+  --color-text: #e5e5e5; /* Off-white — body text */
+  --color-muted: #444444; /* Borders, placeholders, stage labels */
+  --color-surface: #111111; /* Panel/card backgrounds */
+  --color-border: #1a1a1a; /* Subtle borders */
   --font-heading: var(--font-space-grotesk); /* Space Grotesk */
 }
 
 /* ❌ wrong — :root creates CSS variables but NO utility classes */
 :root {
-  --color-accent: #F97415;
+  --color-accent: #f97415;
 }
 ```
 
 **Use `(--color-*)` shorthand in class strings — never `[var(--color-*)]`:**
+
 ```tsx
 // ✅ correct — TW v4 native shorthand
 <div className="border-(--color-border) bg-(--color-surface) text-(--color-muted)" />
@@ -183,6 +197,7 @@ This project uses Tailwind CSS v4. The rules are different from v3 — follow th
 ```
 
 If tokens are defined in `@theme`, you can also use the short utility names directly:
+
 ```tsx
 // ✅ also correct when @theme is properly set up
 <div className="border-border bg-surface text-muted text-accent" />
@@ -201,9 +216,13 @@ const log = createRouteLogger('my-route');
 export async function POST(req: Request): Promise<Response> {
   const ctx = log.begin();
   try {
-    log.info(ctx.reqId, 'Request received', { /* key fields */ });
+    log.info(ctx.reqId, 'Request received', {
+      /* key fields */
+    });
     // ... handler body ...
-    return log.end(ctx, Response.json(result), { /* key result fields */ });
+    return log.end(ctx, Response.json(result), {
+      /* key result fields */
+    });
   } catch (error) {
     log.err(ctx, error);
     return Response.json({ error: 'Internal error' }, { status: 500 });
@@ -233,12 +252,15 @@ analytics.track('event_name', { prop: value });
 ## Dev Server
 
 Start with `Ctrl+Shift+B` (default build task). This runs:
+
 ```
 npm run dev -- --port 3000 2>&1 | Tee-Object -FilePath dev.log
 ```
+
 Tell Copilot **"check logs"** at any point — it reads `dev.log` and flags errors or slow requests.
 
 ## Code Style
+
 - Write as a senior engineer: minimal surface area, obvious naming, no abstractions before they're needed
 - Comments explain WHY, not what
 - One file = one responsibility
@@ -247,6 +269,7 @@ Tell Copilot **"check logs"** at any point — it reads `dev.log` and flags erro
 - Leave TODO comments for post-launch polish items
 
 ## Core Rules
+
 - Every page earns its place — no pages for businesses not yet running
 - Ship fast, stay honest — empty is better than fake
 - Ugly is acceptable, broken is not — polish the core action ruthlessly
