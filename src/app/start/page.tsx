@@ -67,7 +67,7 @@ export default function StartPage() {
           <Button
             variant="ghost"
             onClick={() => setView('market')}
-            className="text-muted hover:text-text px-0 py-0 text-xs"
+            className="text-muted hover:text-text px-0 py-0 text-sm"
           >
             pick a market →
           </Button>

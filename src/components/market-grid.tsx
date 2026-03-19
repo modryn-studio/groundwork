@@ -48,7 +48,7 @@ export function MarketGrid({ markets, selected, onSelect }: MarketGridProps) {
               </span>
             )}
             <span className="font-heading text-text text-sm font-semibold">{market.name}</span>
-            <span className="text-muted text-[13px] leading-relaxed">{market.description}</span>
+            <span className="text-muted text-xs leading-relaxed">{market.description}</span>
             {market.tags.length > 0 && (
               <div className="mt-auto flex flex-wrap gap-1.5 pt-1">
                 {market.tags.map((tag) => (

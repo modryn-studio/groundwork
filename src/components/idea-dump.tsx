@@ -165,7 +165,7 @@ export function IdeaDump({ onIdeasChange, naked, autoFocus }: IdeaDumpProps) {
                     : 'text-muted hover:bg-surface hover:text-text'
                 )}
               >
-                {isListening ? <MicOff size={15} /> : <Mic size={15} />}
+                {isListening ? <MicOff size={14} /> : <Mic size={14} />}
               </button>
             )}
           </div>
@@ -190,7 +190,7 @@ export function IdeaDump({ onIdeasChange, naked, autoFocus }: IdeaDumpProps) {
               onMouseLeave={() => setHoveredId(null)}
               className="group hover:border-border hover:bg-surface flex items-start justify-between gap-3 border border-transparent px-3 py-2.5"
             >
-              <span className="text-text/80 text-[14px] leading-relaxed">{idea.content}</span>
+              <span className="text-text/80 text-sm leading-relaxed">{idea.content}</span>
               <button
                 type="button"
                 onClick={() => deleteIdea(idea.id)}
