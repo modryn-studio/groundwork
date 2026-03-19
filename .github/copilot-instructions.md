@@ -60,6 +60,16 @@ basePath: /tools/groundwork
 
 This is the design philosophy for every screen in Groundwork. The user is a builder who is already in research fatigue. Every element that requires mental processing is a tax. Keep the tax as close to zero as possible.
 
+**Reference implementation:** `https://v0-idea-dump.vercel.app/` (modryn-studio/the.dump). Screen = textarea. That's it. One action, nothing else visible. This is the bar. Before building any new screen, ask: is this as simple as the.dump's home page?
+
+**Before writing a single component, answer these three questions:**
+1. What is the ONE thing the user does on this screen? If you can't answer in 4 words, the screen has too much.
+2. What can be hidden until the user needs it? Gate on state, not on scroll position.
+3. What copy am I about to write that the UI itself should communicate instead?
+
+**Known failure pattern — don't repeat this:**
+The original `/start` put a 13-card market grid AND a textarea on the same scroll page. That's two competing tasks before the user has done anything. The fix was a dump-first view (screen = textarea) with `pick a market →` as a secondary link in the corner — shown when the user decides they want it. Always build the minimal version first. Secondary paths are corner links, not sections on the primary screen.
+
 **Rules (no exceptions without explicit approval):**
 
 - **One primary action per screen.** If there are two, one is wrong.
@@ -73,6 +83,7 @@ This is the design philosophy for every screen in Groundwork. The user is a buil
 - **No confirmation dialogs for reversible actions.** Delete-on-hover with no confirm is correct. Ideas are localStorage — not precious.
 - **Error messages: one sentence.** What to do, not what happened technically.
 - **Don't add copy because a screen feels "empty."** Empty is fine. A screen that does one thing well doesn't need padding copy.
+- **Secondary paths are corner links, not page sections.** If something is optional or secondary, it lives as a small link — not as content competing with the primary action.
 
 ## Brand & Voice
 
