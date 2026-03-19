@@ -35,8 +35,8 @@ export function MarketGrid({ markets, selected, onSelect }: MarketGridProps) {
             variant="ghost"
             onClick={() => onSelect(market)}
             className={cn(
-              'relative flex-col items-start justify-start whitespace-normal gap-2',
-              'rounded-none border p-4 text-left w-full min-h-25',
+              'relative flex-col items-start justify-start gap-2 whitespace-normal',
+              'min-h-25 w-full rounded-none border p-4 text-left',
               isSelected
                 ? 'border-accent bg-accent/5'
                 : 'border-border bg-surface hover:border-accent/50'

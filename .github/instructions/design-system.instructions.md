@@ -4,6 +4,19 @@ applyTo: '**/*.tsx'
 
 # Design System
 
+## Low Cognitive Load — Enforce in Every Component
+
+Every element that requires mental processing is a tax on the user. Keep it zero.
+
+**Hard rules for TSX:**
+- One primary action per screen. If a component introduces a second, push back.
+- No `<p>` or `<span>` copy that explains how the UI works — the UI explains itself.
+- No tooltips. Redesign the element if you think you need one.
+- Labels identify, they don't instruct. `"Market"` not `"Choose the market you want to target."`
+- Don't render an element until it's needed. Gate on state, not on the user reading instructions.
+- Empty states: one minimal hint toward the next action. Not a paragraph.
+- Error messages: one sentence. What to do, not the technical failure description.
+
 ## Shared UI Primitives
 
 All interactive elements use primitives from `src/components/ui/`. Never write raw `<button>`, `<input>`, or `<textarea>` — import and use the shared components.

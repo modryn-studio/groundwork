@@ -49,6 +49,24 @@ basePath: /tools/groundwork
 - `POST /pipeline/resume/:id`     → Send user decision via `Command(resume=...)`, return `{ state }`
 - `GET /pipeline/result/:id`      → Return `{ context_md, brand_md }` when complete
 
+## Low Cognitive Load — Non-Negotiables
+
+This is the design philosophy for every screen in Groundwork. The user is a builder who is already in research fatigue. Every element that requires mental processing is a tax. Keep the tax as close to zero as possible.
+
+**Rules (no exceptions without explicit approval):**
+
+- **One primary action per screen.** If there are two, one is wrong.
+- **No inline helper text.** If an input needs a sentence to explain it, the label is wrong or the input shouldn't exist. The interface IS the instruction.
+- **Progressive disclosure.** Don't show an element until it's needed. The sticky CTA bar hiding until a market is selected is the right pattern — apply it everywhere.
+- **No instructional copy above forms.** Don't explain what a form does; let the form do it.
+- **Empty states suggest the next action.** Not a feature description. Not a "Get started by..." paragraph. One friction-free hint or nothing.
+- **Status is ambient.** Progress shown by the thing changing — not a step counter, not a percentage bar for discrete stages.
+- **Labels are identifiers, not explanations.** "Market" not "Choose the market you want to target."
+- **If you're writing a tooltip, stop.** Redesign the element instead.
+- **No confirmation dialogs for reversible actions.** Delete-on-hover with no confirm is correct. Ideas are localStorage — not precious.
+- **Error messages: one sentence.** What to do, not what happened technically.
+- **Don't add copy because a screen feels "empty."** Empty is fine. A screen that does one thing well doesn't need padding copy.
+
 ## Brand & Voice
 
 **Voice Rules**
