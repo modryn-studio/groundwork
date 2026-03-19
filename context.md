@@ -2,7 +2,7 @@
 
 ## Product
 
-Groundwork — idea-to-spec pipeline for solo builders. Drop a market and a rough idea. Agents research what people already pay for, surface the competitive gap, guide you through 3 decisions. You get a completed `context.md` + `brand.md`, ready to drop into the boilerplate and run `/setup`.
+Groundwork — idea-to-spec pipeline for solo builders. Dump your ideas. The pipeline identifies the market you care about, researches what people already pay for, surfaces the competitive gap, and guides you through 3 decisions. You get a completed `context.md` + `brand.md`, ready to drop into the boilerplate and run `/setup`.
 
 ## Core Framework
 
@@ -12,11 +12,13 @@ Groundwork — idea-to-spec pipeline for solo builders. Drop a market and a roug
 2. Copy a product people already pay for
 3. Add your signature to make it yours
 
-In pipeline terms: **market you know → find what people pay for → differentiation decision → docs**
+In pipeline terms: **idea backlog → market identification → find what people pay for → differentiation decision → docs**
 
-Operationally: **you name the market → agents find what's already selling → you decide the angle**
+Operationally: **builder dumps ideas over time → pipeline identifies the market → agents find what's already selling → builder decides the angle**
 
-The builder supplies step 1. The agents execute step 2. The human checkpoints force step 3. The output is step 4 — the actual files to build from.
+The builder supplies the raw ideas. The pipeline identifies step 1 from them. The agents execute step 2. The human checkpoints force step 3. The output is step 4 — the actual files to build from.
+
+**The dump is the intake.** There is no "name a market" field. The builder maintains an idea backlog directly inside Groundwork. When ready to run the pipeline, they hit run — the pipeline reads all their ideas and surfaces the markets those ideas cluster around. The first checkpoint is a market selection, not a blank input.
 
 ---
 
@@ -75,12 +77,12 @@ V1 is invite-only / unlisted — no paygate. Luke uses it himself first. After 3
 
 ### Frontend (Next.js)
 
-- `/tools/groundwork` → Input form: market (text) + rough idea (text). Submits to FastAPI, stores `thread_id`, begins polling.
+- `/tools/groundwork` → Idea backlog: persistent textarea for dumping ideas (one or many). Voice input supported. "Run pipeline" button triggers Stage 0. Submits all ideas to FastAPI, stores `thread_id`, begins polling.
 - `/tools/groundwork/run/[threadId]` → Pipeline progress + checkpoint UI. Polls `GET /pipeline/status/:threadId` every 2s. Renders checkpoint cards when interrupted. Shows completion state with download buttons. Pipeline error state is handled inline on this route — no separate error page.
 
 ### Backend (FastAPI)
 
-- `POST /pipeline/start` → Validates input, creates LangGraph thread, begins async execution. Returns `{ thread_id }`.
+- `POST /pipeline/start` → Accepts `{ ideas: string[] }`. Validates input (at least 1 idea), creates LangGraph thread, begins async execution. Returns `{ thread_id }`.
 - `GET /pipeline/status/:thread_id` → Returns `{ state: "running" | "interrupted" | "complete" | "error", stage?: string, interrupt?: { question: string, context: string } }`.
 - `POST /pipeline/resume/:thread_id` → Sends user decision to LangGraph via `Command(resume=...)`. Returns `{ state }`.
 - `GET /pipeline/result/:thread_id` → Returns `{ context_md: string, brand_md: string }` when complete.
@@ -107,9 +109,21 @@ export async function POST(req: Request): Promise<Response> {
 
 ## LangGraph Pipeline: Stage-by-Stage
 
+### Stage 0 — Market Identification (no human gate)
+
+GPT-4.1 receives all ideas from the builder's dump and:
+
+- Clusters them by implied market/domain
+- Identifies 2–3 distinct market areas the ideas point to
+- Writes a one-line description of each cluster and which ideas belong to it
+
+### Checkpoint 0 — Market Selection
+
+`interrupt()` surfaces the market clusters. Question: "Here are the markets your ideas point to. Which one do you want to run the pipeline on?" Builder picks one. This becomes the market input for all downstream research. If only one clear cluster exists, it's surfaced as a confirmation rather than a choice.
+
 ### Stage 1 — Parallel Research (no human gate)
 
-Three worker agents run simultaneously via LangGraph parallelization:
+Three worker agents run simultaneously via LangGraph parallelization using the selected market:
 
 - **Reddit agent:** Tavily search for "[market] people pay for", "[market] worth it reddit", "[market] alternatives reddit". Extracts: what people pay, price points, top complaints.
 - **Product Hunt agent:** Tavily search for "[market] site:producthunt.com". Extracts: top products, upvotes, pricing, common criticism in comments.
@@ -130,7 +144,7 @@ GPT-4.1 receives all three research dumps and produces:
 
 GPT-4.1 fills the following context.md sections from research + gap selection:
 
-- Product (name TBD — use the user's rough idea as the name for now)
+- Product (name TBD — inferred from the builder's ideas and selected market)
 - Target User
 - Competitive Landscape
 - Market Validation (pulls cited sources from Stage 1 research)
