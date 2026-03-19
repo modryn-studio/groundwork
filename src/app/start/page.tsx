@@ -7,7 +7,10 @@ import { IdeaDump, type DumpedIdea } from '@/components/idea-dump';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 
+type View = 'dump' | 'market';
+
 export default function StartPage() {
+  const [view, setView] = useState<View>('dump');
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
   const [ideas, setIdeas] = useState<DumpedIdea[]>([]);
   const [keyboardOffset, setKeyboardOffset] = useState(0);
@@ -29,38 +32,49 @@ export default function StartPage() {
   }, []);
 
   return (
-    <main className="bg-bg min-h-screen px-4 pt-16 pb-32 sm:px-6">
-      <div className="mx-auto max-w-3xl">
-        {/* Header */}
-        <div className="mb-10">
-          <h1 className="font-heading text-text text-2xl font-bold sm:text-3xl">Pick a market.</h1>
-          <p className="text-muted mt-2 text-[15px]">
-            Choose one you care about. That&apos;s step one.
-          </p>
+    <main className="bg-bg min-h-screen">
+      {view === 'dump' ? (
+        /* Dump view — screen = textarea, vertically centered */
+        <div className="flex min-h-screen items-center justify-center px-6">
+          <div className="w-full max-w-md">
+            <IdeaDump naked autoFocus onIdeasChange={setIdeas} />
+          </div>
         </div>
-
-        {/* Market grid */}
-        <MarketGrid
-          markets={markets}
-          selected={selectedMarket}
-          onSelect={(m) => setSelectedMarket(selectedMarket?.id === m.id ? null : m)}
-        />
-
-        {/* Idea dump */}
-        <div className="mt-14">
-          <p className="text-muted mb-4 text-[13px] tracking-widest uppercase">
-            Not sure which market? Dump your ideas.
-          </p>
-          <IdeaDump onIdeasChange={setIdeas} />
-          {ideas.length > 0 && !selectedMarket && (
-            <p className="text-muted mt-4 text-[13px]">
-              Pick a market above — or run the pipeline and let it find one from your ideas.
-            </p>
-          )}
+      ) : (
+        /* Market view */
+        <div className="mx-auto max-w-3xl px-4 pt-12 pb-32 sm:px-6">
+          <Button
+            variant="ghost"
+            onClick={() => setView('dump')}
+            className="text-muted hover:text-text mb-8 px-0 py-0 text-sm"
+          >
+            ← dump
+          </Button>
+          <MarketGrid
+            markets={markets}
+            selected={selectedMarket}
+            onSelect={(m) => setSelectedMarket(selectedMarket?.id === m.id ? null : m)}
+          />
         </div>
-      </div>
+      )}
 
-      {/* Sticky CTA — always visible once market is selected */}
+      {/* Fixed bottom-right nav — dump view only */}
+      {view === 'dump' && (
+        <div
+          className="fixed right-6 transition-all"
+          style={{ bottom: keyboardOffset > 0 ? keyboardOffset + 24 : 24 }}
+        >
+          <Button
+            variant="ghost"
+            onClick={() => setView('market')}
+            className="text-muted hover:text-text px-0 py-0 text-xs"
+          >
+            pick a market →
+          </Button>
+        </div>
+      )}
+
+      {/* Sticky CTA — appears when market selected */}
       <div
         className={cn(
           'border-border bg-bg fixed inset-x-0 border-t transition-transform duration-200',
@@ -70,7 +84,7 @@ export default function StartPage() {
       >
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <div className="flex flex-col">
-            <span className="text-muted text-[11px] tracking-widest uppercase">Selected</span>
+            <span className="text-muted text-[11px] tracking-widest uppercase">Market</span>
             <span className="font-heading text-text text-sm font-semibold">
               {selectedMarket?.name}
             </span>

@@ -30,9 +30,13 @@ function saveIdeas(ideas: DumpedIdea[]) {
 interface IdeaDumpProps {
   /** Called whenever the stored idea list changes — lets parent read ideas for pipeline submit */
   onIdeasChange?: (ideas: DumpedIdea[]) => void;
+  /** Naked mode: no outer border box, larger text — matches the.dump full-screen layout */
+  naked?: boolean;
+  /** Auto-focus the textarea on mount */
+  autoFocus?: boolean;
 }
 
-export function IdeaDump({ onIdeasChange }: IdeaDumpProps) {
+export function IdeaDump({ onIdeasChange, naked, autoFocus }: IdeaDumpProps) {
   const [content, setContent] = useState('');
   const [ideas, setIdeas] = useState<DumpedIdea[]>([]);
   const [saved, setSaved] = useState(false);
@@ -47,6 +51,7 @@ export function IdeaDump({ onIdeasChange }: IdeaDumpProps) {
     const stored = loadIdeas();
     setIdeas(stored);
     onIdeasChange?.(stored);
+    if (autoFocus) textareaRef.current?.focus();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Voice input setup
@@ -126,16 +131,26 @@ export function IdeaDump({ onIdeasChange }: IdeaDumpProps) {
   return (
     <div className="flex flex-col gap-4">
       {/* Input area */}
-      <div className="border-border bg-surface border">
+      <div className={cn(!naked && 'border-border bg-surface border')}>
         <Textarea
           ref={textareaRef}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={isListening ? 'listening…' : "what's on your mind?"}
-          className="text-text placeholder:text-muted/50 h-32 w-full resize-none border-none bg-transparent p-4 text-[15px] focus:outline-none focus-visible:ring-0"
+          className={cn(
+            'text-text w-full resize-none border-none bg-transparent focus:outline-none focus-visible:ring-0',
+            naked
+              ? 'placeholder:text-muted/40 h-40 p-4 text-lg'
+              : 'placeholder:text-muted/50 h-32 p-4 text-[15px]'
+          )}
         />
-        <div className="border-border/50 flex items-center justify-between border-t px-3 py-2">
+        <div
+          className={cn(
+            'border-border/50 flex items-center justify-between border-t',
+            naked ? 'pt-4' : 'px-3 py-2'
+          )}
+        >
           <div>
             {speechSupported && (
               /* Exception: circular icon button — raw <button> per design system rules */
