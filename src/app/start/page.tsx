@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { markets, type Market } from '@/config/markets';
 import { MarketGrid } from '@/components/market-grid';
 import { IdeaDump, type DumpedIdea } from '@/components/idea-dump';
@@ -10,6 +10,23 @@ import { cn } from '@/lib/cn';
 export default function StartPage() {
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
   const [ideas, setIdeas] = useState<DumpedIdea[]>([]);
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visualViewport) return;
+    const vp = window.visualViewport;
+    const update = () => {
+      const offset = Math.max(0, window.innerHeight - vp.height - vp.offsetTop);
+      setKeyboardOffset(offset > 120 ? offset : 0);
+    };
+    update();
+    vp.addEventListener('resize', update);
+    vp.addEventListener('scroll', update);
+    return () => {
+      vp.removeEventListener('resize', update);
+      vp.removeEventListener('scroll', update);
+    };
+  }, []);
 
   return (
     <main className="bg-bg min-h-screen px-4 pt-16 pb-32 sm:px-6">
@@ -46,9 +63,10 @@ export default function StartPage() {
       {/* Sticky CTA — always visible once market is selected */}
       <div
         className={cn(
-          'border-border bg-bg fixed inset-x-0 bottom-0 border-t transition-transform duration-200',
+          'border-border bg-bg fixed inset-x-0 border-t transition-transform duration-200',
           selectedMarket ? 'translate-y-0' : 'translate-y-full'
         )}
+        style={{ bottom: keyboardOffset }}
       >
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <div className="flex flex-col">

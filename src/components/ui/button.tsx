@@ -4,18 +4,11 @@ import { cn } from '@/lib/cn';
 type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
-// Token contract — define these in your project's globals.css @theme:
-//   --color-accent             primary action color (bg-accent)
-//   --color-accent-foreground  text on accent bg (text-accent-foreground)
-//   --color-card               elevated/card background (bg-card)
-//   --color-foreground         body text (text-foreground)
-//   --color-muted-foreground   secondary/dimmed text (text-muted-foreground)
-//   --color-border             default border color (border-border)
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-accent text-accent-foreground hover:opacity-90 disabled:opacity-50',
+  primary: 'bg-accent text-white hover:opacity-90 disabled:opacity-50',
   secondary:
-    'border-border bg-card text-foreground border hover:border-accent hover:text-accent disabled:opacity-50',
-  ghost: 'text-muted-foreground hover:text-foreground disabled:opacity-50',
+    'border-border bg-surface text-text border hover:border-accent hover:text-accent disabled:opacity-50',
+  ghost: 'text-muted hover:text-text disabled:opacity-50',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

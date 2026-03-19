@@ -1,7 +1,7 @@
 # Groundwork — Copilot Context
 
 ## Who I Am
-I'm Luke Hanner — a solo developer who ships AI-assisted tools fast, tests against real demand, and focuses on micro-niches. Groundwork is an idea-to-spec pipeline for developers who already know how to code. Drop a market and a rough idea. Agents research what people already pay for, surface the competitive gap, and guide you through three decisions. You get a completed `context.md` + `brand.md`, ready to drop into the boilerplate and run `/setup`.
+I'm Luke Hanner — a solo developer who ships AI-assisted tools fast, tests against real demand, and focuses on micro-niches. Groundwork is an idea-to-spec pipeline for solo builders who already know how to code. Dump your ideas. The pipeline identifies the market, researches what people already pay for, surfaces the competitive gap, and guides you through three decisions. You get a completed `context.md` + `brand.md`, ready to drop into the boilerplate and run `/setup`.
 
 ## Deployment
 <!-- Filled in by /setup from context.md.
@@ -27,21 +27,24 @@ basePath: /tools/groundwork
 ## Project Structure
 ```
 /app                    → Next.js App Router pages
+/app/start              → Market discovery + idea dump intake route
+/app/run/[threadId]     → Pipeline progress + checkpoint UI
 /app/api                → API proxy routes (feedback, checkout)
-/components             → Reusable UI components (EmailSignup, PayGate, FeedbackWidget)
-/config                 → site.ts — single source of truth for metadata
+/components             → Reusable UI components (EmailSignup, PayGate, FeedbackWidget, MarketGrid, IdeaDump)
+/config                 → site.ts — single source of truth for metadata; markets.ts — static market list
 /lib                    → Utilities, analytics stub, route-logger, cn
 ```
 
 ## Route Map
 **Frontend (Next.js)**
-- `/`                      → Home: market + idea input form; submits to FastAPI backend
+- `/`                      → Landing page: email waitlist signup. Untouched until post-validation.
+- `/start`                 → Idea backlog + market discovery. Persistent idea dump (localStorage). Market grid (13 cards, tagged). "Run pipeline" CTA (disabled until backend is live).
 - `/run/[threadId]`        → Pipeline progress + checkpoint UI; polls backend every 2s; error state handled inline
 - `/privacy`               → Privacy policy
 - `/terms`                 → Terms of service
 
 **Backend (FastAPI on Railway — separate repo)**
-- `POST /pipeline/start`          → Validate input, create LangGraph thread, return `{ thread_id }`
+- `POST /pipeline/start`          → Accepts `{ ideas: string[] }`. Validate input, create LangGraph thread, return `{ thread_id }`
 - `GET /pipeline/status/:id`      → Return `{ state, stage?, interrupt? }`
 - `POST /pipeline/resume/:id`     → Send user decision via `Command(resume=...)`, return `{ state }`
 - `GET /pipeline/result/:id`      → Return `{ context_md, brand_md }` when complete

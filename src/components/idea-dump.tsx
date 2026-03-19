@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Mic, MicOff, X } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 
 export interface DumpedIdea {
   id: string;
@@ -153,14 +154,14 @@ export function IdeaDump({ onIdeasChange }: IdeaDumpProps) {
               </button>
             )}
           </div>
-          <button
-            type="button"
+          <Button
+            variant="ghost"
             onClick={handleSubmit}
             disabled={!content.trim()}
-            className="text-muted hover:text-text font-mono text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-30"
+            className="px-0 py-0 font-mono text-sm disabled:opacity-30"
           >
             {saved ? 'saved' : 'dump'}
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -180,7 +181,7 @@ export function IdeaDump({ onIdeasChange }: IdeaDumpProps) {
                 onClick={() => deleteIdea(idea.id)}
                 aria-label="Delete idea"
                 className={cn(
-                  'text-muted mt-0.5 flex-shrink-0 transition-opacity',
+                  'text-muted mt-0.5 shrink-0 transition-opacity',
                   hoveredId === idea.id ? 'opacity-100' : 'opacity-0',
                   'hover:text-text'
                 )}

@@ -34,15 +34,15 @@ A solo builder who has an idea (or a market they already care about) and wants t
 
 Seven named slots — these become the `@theme` tokens in `globals.css`.
 
-| Name       | Hex     | Role                                                     |
-| ---------- | ------- | -------------------------------------------------------- |
-| Accent     | #F97415 | Amber — action, progress, CTAs. Matches Modryn Studio.   |
-| Secondary  | #3B82F6 | Blue — checkpoint cards, decision prompts, informational |
+| Name       | Hex     | Role                                                        |
+| ---------- | ------- | ----------------------------------------------------------- |
+| Accent     | #F97415 | Amber — action, progress, CTAs. Matches Modryn Studio.      |
+| Secondary  | #3B82F6 | Blue — checkpoint cards, decision prompts, informational    |
 | Background | #0d0d0d | Dark gray — not pure black. Gives surfaces room to breathe. |
-| Text       | #E5E5E5 | Off-white — readable on dark                             |
-| Muted      | #666666 | Placeholders, labels, secondary text. Readable on dark bg. |
-| Surface    | #161616 | Panel and card backgrounds. Subtle lift from base.       |
-| Border     | #222222 | Separators, card outlines. Visible but not loud.         |
+| Text       | #E5E5E5 | Off-white — readable on dark                                |
+| Muted      | #666666 | Placeholders, labels, secondary text. Readable on dark bg.  |
+| Surface    | #161616 | Panel and card backgrounds. Subtle lift from base.          |
+| Border     | #222222 | Separators, card outlines. Visible but not loud.            |
 
 Color rules:
 

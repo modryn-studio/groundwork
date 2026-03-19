@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/cn';
 import { type Market, type MarketTag } from '@/config/markets';
+import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 
 const tagStyles: Record<MarketTag, string> = {
@@ -28,13 +29,14 @@ export function MarketGrid({ markets, selected, onSelect }: MarketGridProps) {
       {markets.map((market) => {
         const isSelected = selected?.id === market.id;
         return (
-          <button
+          <Button
             key={market.id}
             type="button"
+            variant="ghost"
             onClick={() => onSelect(market)}
             className={cn(
-              'relative flex flex-col gap-2 rounded-none border p-4 text-left transition-colors',
-              'min-h-[100px] cursor-pointer',
+              'relative flex-col items-start justify-start whitespace-normal gap-2',
+              'rounded-none border p-4 text-left w-full min-h-25',
               isSelected
                 ? 'border-accent bg-accent/5'
                 : 'border-border bg-surface hover:border-accent/50'
@@ -62,7 +64,7 @@ export function MarketGrid({ markets, selected, onSelect }: MarketGridProps) {
                 ))}
               </div>
             )}
-          </button>
+          </Button>
         );
       })}
     </div>

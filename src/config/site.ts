@@ -7,11 +7,11 @@ export const site = {
   url: 'https://modrynstudio.com/tools/groundwork',
   // Base description — used in <meta description>, manifest, JSON-LD
   description:
-    'Groundwork turns a market and a rough idea into context.md and brand.md — the exact build files you need, without the research phase.',
+    'Dump your ideas. Groundwork identifies the market, researches what people pay for, and outputs context.md + brand.md — ready to build from.',
   // Used as the <title> tag (homepage + fallback) AND social card title.
   ogTitle: 'Groundwork — The Research Pipeline for Solo Builders',
   ogDescription:
-    'Drop a market and a rough idea. Agents find what people already pay for. You pick the angle. You get context.md and brand.md, ready to build from.',
+    'Dump your ideas. Agents find the market and what people already pay for. You decide the angle. You get context.md and brand.md, ready to build from.',
   cta: 'Start the pipeline →',
   founder: 'Luke Hanner',
   email: 'hello@modrynstudio.com',
@@ -24,7 +24,7 @@ export const site = {
   },
   // Brand colors — used in manifest theme_color / background_color
   accent: '#F97415',
-  bg: '#050505',
+  bg: '#0d0d0d',
   // Social profiles
   social: {
     twitter: 'https://x.com/lukehanner',
