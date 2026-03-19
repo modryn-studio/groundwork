@@ -1,76 +1,68 @@
 # Brand
 
-Fill this in before running `/init`. It populates the Brand & Voice section of `copilot-instructions.md`.
+Fill this in before running `/setup`. It populates the Brand & Voice section of `copilot-instructions.md`.
 
 ---
 
 ## Voice
 
-How the product sounds in UI copy, headings, CTAs, and error messages.
-
-- <!-- TODO: voice rule 1. Example: "Short sentences. Direct. No jargon." -->
-- <!-- TODO: voice rule 2. Example: "Confident without being arrogant." -->
-- <!-- TODO: voice rule 3. Example: "Honest about what doesn't exist yet." -->
-- Never use: <!-- TODO: list words/phrases that feel off-brand. Example: "powerful, seamless, revolutionary, unlock" -->
+- Short sentences. Builders skim. Get to the point.
+- Talk to someone who has started and abandoned too many side projects in the research phase.
+- You already know how to build. This clears the runway.
+- Never use: "powerful", "seamless", "AI-powered", "unlock", "revolutionize", "validate", "supercharge"
 
 ---
 
 ## The User
 
-One or two sentences describing who you're building for. Be specific about what they feel, want, or hate.
+A solo builder who has an idea (or a market they already care about) and wants to start building — not spend a week on market research, competitive analysis, and positioning before touching code. They've done this the hard way before. They know the research is necessary. They just don't want to do it manually again.
 
-<!-- TODO: Example: "Impatient people who hate bad software and don't want to do the research. They want it handed to them. Fast." -->
+**Core positioning:** Groundwork doesn't replace your judgment. It does the research and names the decisions so you can make them fast. The output isn't a report — it's the exact files you need to start building. You supply the idea. Groundwork does the legwork.
 
 ---
 
 ## Visual Rules
 
-- Color mode: <!-- TODO: Example: "Dark mode base, system toggle" -->
-- Fonts: <!-- TODO: Example: "Space Grotesk (headlines) + Space Mono (badges/code)" -->
-- Motion: <!-- TODO: Example: "Minimal. One scroll fade max." -->
-- Avoid: <!-- TODO: Example: "No fake testimonials, no stock photos, no popups" -->
+- Color mode: Dark only — this is a builder tool, not a SaaS landing page
+- Fonts: Space Grotesk (headings) + Space Mono (pipeline output, doc previews, file names)
+- Motion: Minimal — one subtle progress indicator during pipeline runs only. Nothing decorative.
+- Avoid: No rocket ships, no lightbulbs, no "idea" stock imagery, no generic startup visual vocabulary
 
 ---
 
 ## Color System
 
-Five named slots — fill all before running `/init`. These become the `@theme` tokens in `globals.css`.
+Five named slots — fill all before running `/setup`. These become the `@theme` tokens in `globals.css`.
 
-| Name | Hex | Role |
-|---|---|---|
-| Accent | <!-- TODO: #XXXXXX --> | Primary — CTAs, logomark, key interactive moments |
-| Secondary | <!-- TODO: #XXXXXX --> | Supporting accent — celebration states, highlights |
-| Background | <!-- TODO: #XXXXXX --> | Page background base |
-| Text | <!-- TODO: #XXXXXX --> | Body text — dark, but warm not cold |
-| Muted | <!-- TODO: #XXXXXX --> | Secondary text, borders, placeholders |
+| Name       | Hex     | Role                                                     |
+| ---------- | ------- | -------------------------------------------------------- |
+| Accent     | #F97415 | Amber — action, progress, CTAs. Matches Modryn Studio.   |
+| Secondary  | #3B82F6 | Blue — checkpoint cards, decision prompts, informational |
+| Background | #050505 | Near-black — matches studio base                         |
+| Text       | #E5E5E5 | Off-white — readable on dark                             |
+| Muted      | #444444 | Borders, placeholders, stage labels                      |
 
 Color rules:
-- <!-- TODO: What color territory does your main competitor own? Avoid it entirely. Example: "Competitor X owns blue-purple gradients." -->
-- <!-- TODO: Any colors explicitly banned? Example: "No cool grays, no pure black, no gradients." -->
+
+- Accent amber is inherited from Modryn Studio — this tool lives in the studio, it should feel like part of the same system.
+- Secondary blue is reserved for checkpoint / decision UI only. When the pipeline pauses and asks a question, the card turns blue. This creates a visual pattern: amber = forward motion, blue = your turn.
+- Never use red except for error states.
 
 ---
 
 ## Logomark
 
-Discovery questions — answer all before attempting to design the mark.
+**Direction:** "G" letterform in Space Mono, or abstract horizontal layers suggesting stacked groundwork / foundation layers
 
-**Direction:**
-<!-- TODO: Letterform, abstract shape, or icon? Example: "Single letterform — the S in Instrument Serif" -->
+**Primary color:** Accent #F97415
 
-**Primary color:**
-<!-- TODO: Which brand color is the mark rendered in? Example: "Accent #FF6B6B" -->
+**Background:** Transparent — no container
 
-**Background:**
-<!-- TODO: Transparent, contained circle, etc.? Example: "Transparent — no container" -->
+**Future-proofing:** Mark must work as a standalone icon in the tools grid on modrynstudio.com. Keep it simple enough to read at 40×40px.
 
-**Future-proofing:**
-<!-- TODO: Is the mark tied to the current niche, or scalable? Example: "No birthday-specific imagery — mark must work if product expands to anniversaries/graduations" -->
+**Competitor exclusions:** AI Cofounder uses a chat-bubble / conversation icon. Avoid anything that reads as "chat" or "conversation."
 
-**Competitor exclusions:**
-<!-- TODO: What visual territory does your main competitor own that you must avoid? Example: "Competitor owns pink-purple gradient circle + music note — avoid: gradients, circle badges, music notes" -->
-
-**Anti-patterns:**
-<!-- TODO: Broader category clichés to avoid. Example: "No music notes, no headphones, no waveform bars, no vinyl" -->
+**Anti-patterns:** No lightbulbs, no gears, no brain icons — the entire "idea + AI" visual vocabulary is off-limits.
 
 ---
 
@@ -78,10 +70,10 @@ Discovery questions — answer all before attempting to design the mark.
 
 What a visitor feels at each stage — land, read, scroll, convert.
 
-- Land: <!-- TODO: Example: "Wait, this is different" -->
-- Read: <!-- TODO: Example: "This person actually builds real things" -->
-- Scroll: <!-- TODO: Example: "I want to follow this journey" -->
-- Convert: <!-- TODO: Example: "I don't want to miss the next one" -->
+- Land: "This is the thing I've been doing manually in a conversation with ChatGPT"
+- Read: "It actually outputs the files I need, not a summary to screenshot"
+- Scroll: "I want to see what the checkpoint looks like"
+- Convert: "I have an idea right now. I'm running it."
 
 ---
 
@@ -89,7 +81,26 @@ What a visitor feels at each stage — land, read, scroll, convert.
 
 Real copy to use as reference when writing UI text.
 
-- Hero: <!-- TODO: Example: "Tools for people who don't have time for bad software." -->
-- CTA: <!-- TODO: Example: "Don't miss the drop." -->
-- Footer: <!-- TODO: Example: "Built by Luke. Paid for by a day job. Shipping anyway." -->
-- Error: <!-- TODO: Example: "Something went wrong. Try again." -->
+- Hero: "Drop an idea. Get the docs."
+- Sub: "You name the market. Agents find what's already selling. You decide the angle. You get context.md and brand.md, ready to build from."
+- CTA: "Start the pipeline"
+- Stage label (running): "Researching what people pay for..."
+- Stage label (checkpoint): "Your turn."
+- Checkpoint prompt: "Here's what the research found. Pick the gap you want to own."
+- Empty state: "Enter a market and a rough idea to start."
+- Completion: "Your docs are ready. Drop them in the boilerplate and run /setup."
+- Against AI Cofounder: "Doesn't give you a report. Gives you the files."
+- Against DIY ChatGPT: "You've done this in a chat window before. You know how it ends."
+- Footer: "Built by a builder who got tired of doing research before the research."
+
+---
+
+## Launch Voice (Indie Hackers / Ship or Die)
+
+The launch post is not marketing. It's a builder talking to other builders. Tone rules:
+
+- First person, past tense problem statement. "I was spending hours on research before every build..."
+- Name the product early. Link to the tool page.
+- Describe the output concretely — "two markdown files, context.md and brand.md." Specificity signals it's real.
+- No AI hype. "Agents do the research, you make the decisions" — not "AI-powered market validation."
+- The product does the legwork. You make the calls. Say that plainly.

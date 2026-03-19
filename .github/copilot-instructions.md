@@ -1,7 +1,7 @@
-# [Project Name] — Copilot Context
+# Groundwork — Copilot Context
 
 ## Who I Am
-<!-- TODO: describe yourself, your product, and your target user -->
+I'm Luke Hanner — a solo developer who ships AI-assisted tools fast, tests against real demand, and focuses on micro-niches. Groundwork is an idea-to-spec pipeline for developers who already know how to code. Drop a market and a rough idea. Agents research what people already pay for, surface the competitive gap, and guide you through three decisions. You get a completed `context.md` + `brand.md`, ready to drop into the boilerplate and run `/setup`.
 
 ## Deployment
 <!-- Filled in by /setup from context.md.
@@ -9,9 +9,9 @@
      If mode is modryn-app:         basePath must stay set in next.config.ts.
      If mode is standalone-*:       basePath must be absent from next.config.ts. -->
 
-mode: <!-- modryn-app | standalone-subdomain | standalone-domain -->
-url:  <!-- canonical URL -->
-basePath: <!-- /tools/your-slug   (empty for standalone modes) -->
+mode: modryn-app
+url:  https://modrynstudio.com/tools/groundwork
+basePath: /tools/groundwork
 
 ## Stack
 - Next.js 16 (App Router) with TypeScript
@@ -19,30 +19,77 @@ basePath: <!-- /tools/your-slug   (empty for standalone modes) -->
 - Vercel for deployment
 - Vercel Analytics `<Analytics />` in `layout.tsx` — zero-config pageview tracking, no env vars needed
 - `@/lib/analytics.ts` — no-op stub with named methods; wire in a real provider here if needed
-<!-- TODO: add project-specific services (e.g. Resend, Stripe, Prisma, Supabase) -->
+- Resend — transactional email via `/api/feedback`
+- Stripe — installed; not active in V1 (email-only)
+- Lucide React — icons
+- **Backend (not in this repo — separate Railway Python service):** LangGraph, FastAPI, Tavily Python SDK, OpenAI Python SDK, psycopg — see context.md for environment variables
 
 ## Project Structure
 ```
 /app                    → Next.js App Router pages
-/components             → Reusable UI components
-/lib                    → Utilities, helpers, data fetching
-<!-- TODO: add any project-specific directories -->
+/app/api                → API proxy routes (feedback, checkout)
+/components             → Reusable UI components (EmailSignup, PayGate, FeedbackWidget)
+/config                 → site.ts — single source of truth for metadata
+/lib                    → Utilities, analytics stub, route-logger, cn
 ```
 
 ## Route Map
-<!-- TODO: list every route and what it does -->
-- `/`                → (home)
-- `/privacy`         → Privacy policy
-- `/terms`           → Terms of service
+**Frontend (Next.js)**
+- `/`                      → Home: market + idea input form; submits to FastAPI backend
+- `/run/[threadId]`        → Pipeline progress + checkpoint UI; polls backend every 2s; error state handled inline
+- `/privacy`               → Privacy policy
+- `/terms`                 → Terms of service
+
+**Backend (FastAPI on Railway — separate repo)**
+- `POST /pipeline/start`          → Validate input, create LangGraph thread, return `{ thread_id }`
+- `GET /pipeline/status/:id`      → Return `{ state, stage?, interrupt? }`
+- `POST /pipeline/resume/:id`     → Send user decision via `Command(resume=...)`, return `{ state }`
+- `GET /pipeline/result/:id`      → Return `{ context_md, brand_md }` when complete
 
 ## Brand & Voice
-<!-- TODO: populate from brand.md
-  Voice rules: how the product sounds (tone, banned words, sentence style)
-  Target User: 2–3 sentence portrait of who is using this and why
-  Visual Rules: colors (all 5 with roles), fonts, motion, things to avoid
-  Emotional Arc: what the user feels at each stage — land, use, convert, share
-  Copy Reference: real examples of hero, CTA, error, waiting state copy
--->
+
+**Voice Rules**
+- Short sentences. Builders skim. Get to the point.
+- Talk to someone who has started and abandoned too many side projects in the research phase.
+- You already know how to build. This clears the runway.
+- Never use: "powerful", "seamless", "AI-powered", "unlock", "revolutionize", "validate", "supercharge"
+
+**Target User**
+A solo developer with an idea (or a market they care about) who wants to start building — not spend a week on research and positioning before touching code. They've done this the hard way before. They know the research is necessary. They don't want to do it manually again. Groundwork doesn't replace their judgment — it does the research and names the decisions so they can make them fast.
+
+**Visual Rules**
+- Dark mode only — builder tool, not a SaaS landing page
+- Fonts: Space Grotesk (headings) + Space Mono (pipeline output, doc previews, file names)
+- Motion: Minimal — one subtle progress indicator during pipeline runs only. Nothing decorative.
+- Avoid: No rocket ships, lightbulbs, brain icons, or generic startup visual vocabulary
+
+**Color System**
+| Name       | Hex     | Role                                        |
+| ---------- | ------- | ------------------------------------------- |
+| Accent     | #F97415 | Amber — action, progress, CTAs              |
+| Secondary  | #3B82F6 | Blue — checkpoint cards, decision prompts   |
+| Background | #050505 | Near-black — base                           |
+| Text       | #E5E5E5 | Off-white — body text                       |
+| Muted      | #444444 | Borders, placeholders, stage labels         |
+Amber = forward motion. Blue = your turn (checkpoint UI only). Never red except errors.
+
+**Emotional Arc**
+- Land: "This is the thing I've been doing manually in a conversation with ChatGPT"
+- Read: "It actually outputs the files I need, not a summary to screenshot"
+- Scroll: "I want to see what the checkpoint looks like"
+- Convert: "I have an idea right now. I'm running it."
+
+**Copy Reference**
+- Hero: "Drop an idea. Get the docs."
+- Sub: "You name the market. Agents find what's already selling. You decide the angle. You get context.md and brand.md, ready to build from."
+- CTA: "Start the pipeline"
+- Stage label (running): "Researching what people pay for..."
+- Stage label (checkpoint): "Your turn."
+- Checkpoint prompt: "Here's what the research found. Pick the gap you want to own."
+- Completion: "Your docs are ready. Drop them in the boilerplate and run /setup."
+- Against AI Cofounder: "Doesn't give you a report. Gives you the files."
+- Against DIY ChatGPT: "You've done this in a chat window before. You know how it ends."
+- Footer: "Built by a builder who got tired of doing research before the research."
 
 ## README Standard
 
@@ -83,18 +130,17 @@ This project uses Tailwind CSS v4. The rules are different from v3 — follow th
 
 **Design tokens live in `@theme`, not `:root`:**
 
-<!-- TODO: update the @theme example below with the actual brand colors from globals.css -->
 ```css
 /* ✅ correct — generates text-accent, bg-surface, border-border, etc. */
 @theme {
-  --color-accent: #F97415;    /* TODO: replace with brand accent color */
-  --color-secondary: #FFDD00; /* TODO: replace with brand secondary color */
-  --color-bg: #050505;        /* TODO: replace with brand background color */
-  --color-text: #e5e5e5;      /* TODO: replace with brand text color */
-  --color-muted: #666666;     /* TODO: replace with brand muted color */
-  --color-surface: #111111;   /* TODO: replace with brand surface color */
-  --color-border: #222222;    /* TODO: replace with brand border color */
-  --font-heading: var(--font-sans); /* TODO: replace with brand heading font */
+  --color-accent: #F97415;    /* Amber — action, progress, CTAs */
+  --color-secondary: #3B82F6; /* Blue — checkpoint cards, decision prompts */
+  --color-bg: #050505;        /* Near-black — base background */
+  --color-text: #E5E5E5;      /* Off-white — body text */
+  --color-muted: #444444;     /* Borders, placeholders, stage labels */
+  --color-surface: #111111;   /* Panel/card backgrounds */
+  --color-border: #1A1A1A;    /* Subtle borders */
+  --font-heading: var(--font-space-grotesk); /* Space Grotesk */
 }
 
 /* ❌ wrong — :root creates CSS variables but NO utility classes */

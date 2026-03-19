@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-accent: #F97415;    /* Amber — action, progress, CTAs */
+  --color-secondary: #3B82F6; /* Blue — checkpoint cards, decision prompts */
+  --color-bg: #050505;        /* Near-black — base background */
+  --color-text: #E5E5E5;      /* Off-white — body text */
+  --color-muted: #444444;     /* Borders, placeholders, stage labels */
+  --color-surface: #111111;   /* Panel/card backgrounds */
+  --color-border: #1A1A1A;    /* Subtle borders */
+  --font-heading: var(--font-space-grotesk); /* Space Grotesk */
+}
+
+@layer base {
+  html {
+    @apply bg-bg text-text;
+  }
+}
