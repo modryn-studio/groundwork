@@ -15,4 +15,13 @@
   html {
     @apply bg-bg text-text;
   }
+
+  /* Light mode overrides — applied when html has class="light" */
+  html.light {
+    --color-bg: #f5f5f5;
+    --color-text: #1a1a1a;
+    --color-muted: #777777;
+    --color-surface: #ebebeb;
+    --color-border: #d4d4d4;
+  }
 }

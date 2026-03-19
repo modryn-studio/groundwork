@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Space_Grotesk, Space_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { site } from '@/config/site';
+import { ThemeToggle } from '@/components/theme-toggle';
 import './globals.css';
 
 const spaceGrotesk = Space_Grotesk({
@@ -35,7 +36,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${spaceMono.variable}`}>
+      <head>
+        {/* Prevent flash of wrong theme on load */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.add('light');}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body>
+        <ThemeToggle />
         {children}
         <Analytics />
       </body>
