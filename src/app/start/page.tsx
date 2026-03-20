@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { markets, type MarketSignal } from '@/config/markets';
 import { MarketGrid } from '@/components/market-grid';
 import { MarketModeTabs, type MarketMode } from '@/components/market-mode-tabs';
@@ -12,11 +13,13 @@ import { cn } from '@/lib/cn';
 type View = 'dump' | 'market';
 
 export default function StartPage() {
+  const router = useRouter();
   const [view, setView] = useState<View>('dump');
   const [marketSignal, setMarketSignal] = useState<MarketSignal | null>(null);
   const [marketMode, setMarketMode] = useState<MarketMode>('category');
   const [ideas, setIdeas] = useState<DumpedIdea[]>([]);
   const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.visualViewport) return;
@@ -33,6 +36,26 @@ export default function StartPage() {
       vp.removeEventListener('scroll', update);
     };
   }, []);
+
+  const handleRun = async () => {
+    if (isRunning) return;
+    setIsRunning(true);
+    try {
+      const res = await fetch('/api/pipeline/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ideas: ideas.map((i) => i.content).filter(Boolean),
+          market_signal: marketSignal,
+        }),
+      });
+      if (!res.ok) throw new Error('start failed');
+      const { thread_id } = await res.json();
+      router.push(`/run/${thread_id}`);
+    } catch {
+      setIsRunning(false);
+    }
+  };
 
   const handleModeChange = (mode: MarketMode) => {
     setMarketMode(mode);
@@ -102,9 +125,7 @@ export default function StartPage() {
             <MarketTextInput
               placeholder="personalfinance"
               prefix="r/"
-              onSubmit={(v) =>
-                setMarketSignal({ type: 'subreddit', value: v, label: `r/${v}` })
-              }
+              onSubmit={(v) => setMarketSignal({ type: 'subreddit', value: v, label: `r/${v}` })}
             />
           )}
         </div>
@@ -141,8 +162,8 @@ export default function StartPage() {
               {marketSignal?.label}
             </span>
           </div>
-          <Button type="button" disabled title="Pipeline coming soon" className="rounded-none px-6">
-            Run pipeline →
+          <Button type="button" onClick={handleRun} disabled={isRunning} className="rounded-none px-6">
+            {isRunning ? 'Starting...' : 'Run pipeline →'}
           </Button>
         </div>
       </div>
