@@ -22,3 +22,5 @@ Four ways to set a market:
 - **Subreddit** — name the community your user lives in (e.g. `personalfinance` → `r/personalfinance`)
 
 Once a market is set, a bar appears at the bottom confirming your selection. Switching tabs clears it.
+
+"Run pipeline →" becomes active when a market is set. Tapping it submits your ideas and market, then redirects to `/run/[threadId]` where you can watch progress and respond to checkpoints.

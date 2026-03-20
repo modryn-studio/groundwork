@@ -47,7 +47,7 @@ V1 is invite-only / unlisted — no paygate. Luke uses it himself first. After 3
 - **Next.js frontend** (existing modryn-studio-v2 boilerplate) — input form, pipeline progress UI, checkpoint cards, output/download page
 - **Python FastAPI backend** (separate Render deployment) — LangGraph pipeline, Tavily research workers, Claude synthesis, PostgreSQL checkpointer
 
-**Why two services:** LangGraph requires a persistent, long-running process for state across `interrupt()` calls. Vercel functions time out at 60 seconds — research runs routinely exceed that. Railway solves it cleanly.
+**Why two services:** LangGraph requires a persistent, long-running process for state across `interrupt()` calls. Vercel functions time out at 60 seconds — research runs routinely exceed that. Render solves it cleanly.
 
 ## Stack Additions
 
@@ -55,10 +55,10 @@ V1 is invite-only / unlisted — no paygate. Luke uses it himself first. After 3
 
 - No additional npm packages required. Uses existing fetch/polling pattern against FastAPI endpoints.
 
-### Backend (Python / Railway)
+### Backend (Python / Render)
 
 - `langgraph` — workflow orchestration + `interrupt()` for human-in-the-loop checkpoints
-- `langgraph-checkpoint-postgres` — PostgreSQL checkpointer (Neon free tier, persists state across Railway restarts)
+- `langgraph-checkpoint-postgres` — PostgreSQL checkpointer (Neon free tier, persists state across Render restarts)
 - `fastapi` + `uvicorn` — API server
 - `tavily-python` — `TavilySearchResults` tool for agentic web research (Reddit, Product Hunt, Indie Hackers). Free: 1,000 calls/mo. Paid: $0.008/call. (env var: `TAVILY_API_KEY`)
 - `langchain-anthropic` — `claude-sonnet-4-6` for Stage 0, `claude-opus-4-6` for Stage 2+ synthesis, gap analysis, and doc generation. (env var: `ANTHROPIC_API_KEY`)
@@ -177,7 +177,7 @@ Both docs marked complete. Thread state set to `"complete"`. Result available at
 
 ## Checkpointer
 
-Use `PostgresSaver` from `langgraph-checkpoint-postgres` with Neon free tier. Required because Railway processes restart on deploy — `InMemorySaver` would lose all thread state. `thread_id` is a UUID generated at pipeline start, stored in Next.js state and the URL (`/tools/groundwork/run/[threadId]`).
+Use `PostgresSaver` from `langgraph-checkpoint-postgres` with Neon free tier. Required because Render processes restart on deploy — `InMemorySaver` would lose all thread state. `thread_id` is a UUID generated at pipeline start, stored in Next.js state and the URL (`/tools/groundwork/run/[threadId]`).
 
 ## Architecture Constraints
 
