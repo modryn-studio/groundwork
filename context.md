@@ -245,12 +245,13 @@ This is not a normal boilerplate clone-and-scaffold project. The pipeline behavi
 
 ### Correct order
 
-1. **Clone + `/setup`** — get the repo and scaffolding out of the way. It deploys. It builds. Stop there.
-2. **Run the framework manually** — use Claude or ChatGPT. Pick a real market you care about. Find what people actually pay for (Product Hunt, Reddit, IH — manually, no scripts). Make the differentiation call. Write it down.
-3. **Document what you actually did** — what queries did you run? What did you find? How long did each step take? What was hard to synthesize? This becomes the real spec for Stage 1.
-4. **Build step 1** — the intake form — because you now know exactly what inputs are needed.
-5. **Build Stage 1** — the research agents — because you know what queries work, because you just ran them yourself.
-6. **Continue one stage at a time**, always running the stage manually before automating it.
+1. ~~**Clone + `/setup`**~~ ✅ Done. Repo live, deploys clean.
+2. ~~**Run the framework manually**~~ ✅ Done. Groundwork itself was the manual run — market research, competitive analysis, differentiation decision all done by hand before a line of pipeline code was written.
+3. ~~**Document what you actually did**~~ ✅ Done. `docs/backend-reference.md` captures the query patterns, API shapes, and patterns from reference repos. `context.md` Stage 1 section documents what each research worker extracts.
+4. ~~**Build the intake**~~ ✅ Done. `/start` — idea dump + four market discovery modes (Browse, Type it, Competitor, Subreddit) → unified `MarketSignal`. Market signal wiring to pipeline is stubbed, ready to connect.
+5. **Build the Python backend** — FastAPI + LangGraph. Start with Stage 0 (market identification from ideas) and the first `interrupt()`. Get one checkpoint working end-to-end before building Stage 1 research workers. Reference: `docs/backend-reference.md`.
+6. **Build Stage 1 research workers** — four parallel Tavily agents (Reddit, Product Hunt, Indie Hackers, GitHub). Wire to the checkpoint. Confirm output quality before building synthesis.
+7. **Continue one stage at a time** — synthesis, doc generation, each checkpoint. Run each stage against a real market before building the next.
 
 ### The rule
 
