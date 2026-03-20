@@ -37,7 +37,8 @@ export default function StartPage() {
     };
   }, []);
 
-  const handleRun = async () => {
+  // Path A: user dumped ideas, no market signal — Stage 0 identifies market
+  const handleRunFromDump = async () => {
     if (isRunning) return;
     setIsRunning(true);
     try {
@@ -46,6 +47,27 @@ export default function StartPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ideas: ideas.map((i) => i.content).filter(Boolean),
+          market_signal: null,
+        }),
+      });
+      if (!res.ok) throw new Error('start failed');
+      const { thread_id } = await res.json();
+      router.push(`/run/${thread_id}`);
+    } catch {
+      setIsRunning(false);
+    }
+  };
+
+  // Path B: user already knows their market — skip Stage 0, go straight to research
+  const handleRunFromMarket = async () => {
+    if (!marketSignal || isRunning) return;
+    setIsRunning(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/pipeline/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ideas: [],
           market_signal: marketSignal,
         }),
       });
@@ -134,9 +156,19 @@ export default function StartPage() {
       {/* Fixed bottom-right nav — dump view only */}
       {view === 'dump' && (
         <div
-          className="fixed right-6 transition-all"
+          className="fixed right-6 flex flex-col items-end gap-2 transition-all"
           style={{ bottom: keyboardOffset > 0 ? keyboardOffset + 24 : 24 }}
         >
+          {ideas.length > 0 && (
+            <Button
+              variant="ghost"
+              onClick={handleRunFromDump}
+              disabled={isRunning}
+              className="text-accent px-0 py-0 text-sm"
+            >
+              {isRunning ? 'Starting...' : 'Run pipeline →'}
+            </Button>
+          )}
           <Button
             variant="ghost"
             onClick={() => setView('market')}
@@ -164,7 +196,7 @@ export default function StartPage() {
           </div>
           <Button
             type="button"
-            onClick={handleRun}
+            onClick={handleRunFromMarket}
             disabled={isRunning}
             className="rounded-none px-6"
           >

@@ -25,7 +25,7 @@ basePath: /tools/groundwork
 - Resend — transactional email via `/api/feedback`
 - Stripe — installed; not active in V1 (email-only)
 - Lucide React — icons
-- **Backend (not in this repo — separate Railway Python service):** LangGraph, langgraph-checkpoint-postgres (Neon PostgreSQL checkpointer), FastAPI + uvicorn, Tavily Python SDK, OpenAI GPT-4.1, psycopg — see context.md for environment variables
+- **Backend (not in this repo — separate Render Python service):** LangGraph, langgraph-checkpoint-postgres (Neon PostgreSQL checkpointer), FastAPI + uvicorn, Tavily Python SDK, langchain-anthropic (claude-sonnet-4-6 / claude-opus-4-6), psycopg — see context.md for environment variables
 
 ## Project Structure
 
@@ -44,14 +44,14 @@ basePath: /tools/groundwork
 **Frontend (Next.js)**
 
 - `/` → Landing page: email waitlist signup. Untouched until post-validation.
-- `/start` → Idea dump + market discovery. Four intake modes: Browse (category grid), Type it (free text), Competitor (name a competitor), Subreddit (subreddit name). Each mode produces a `MarketSignal`. "Run pipeline" CTA enabled when a signal is set.
+- `/start` → Two entry paths. **Dump path (default):** idea backlog textarea with voice input; ideas persist in localStorage; "Run pipeline →" appears once ideas exist, submits ideas with no market signal, Stage 0 identifies markets. **Market path:** "pick a market →" corner link; four modes (Browse, Type it, Competitor, Subreddit), each produces a `MarketSignal`; "Run pipeline →" in sticky CTA bar submits signal only, skips Stage 0 + Checkpoint 0, goes straight to research.
 - `/run/[threadId]` → Pipeline progress + checkpoint UI; polls backend every 2s; error state handled inline
 - `/privacy` → Privacy policy
 - `/terms` → Terms of service
 
-**Backend (FastAPI on Railway — separate repo)**
+**Backend (FastAPI on Render — separate repo)**
 
-- `POST /pipeline/start` → Accepts `{ ideas: string[] }`. Validate input, create LangGraph thread, return `{ thread_id }`
+- `POST /pipeline/start` → Accepts `{ ideas: string[], market_signal: MarketSignal | null }`. Requires ideas OR market_signal. Routes to Stage 0 (market identification) when no signal; routes directly to Stage 1 (research) when signal present. Returns `{ thread_id }`
 - `GET /pipeline/status/:id` → Return `{ state, stage?, interrupt? }`
 - `POST /pipeline/resume/:id` → Send user decision via `Command(resume=...)`, return `{ state }`
 - `GET /pipeline/result/:id` → Return `{ context_md, brand_md }` when complete

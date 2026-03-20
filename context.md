@@ -20,7 +20,7 @@ The builder supplies the raw ideas. The pipeline identifies step 1 from them. Th
 
 **"What people already pay for" is the clearest signal, not the only one.** For developer tool markets, GitHub stars, forks, and derivative tools built on top of a repo are equivalent demand signals — proven interest without a paywall. The research agents should treat high-star open-source repos in a market the same way they treat paid competitors: what problem does it solve, what do people complain about, where is it incomplete?
 
-**The dump is the primary intake, but not the only path.** The builder maintains an idea backlog inside Groundwork. When ready to run, they hit run — the pipeline reads their ideas and surfaces markets those ideas cluster around. Alternatively, the builder can skip the dump and signal a market directly: by naming it (free text), naming a competitor, or naming a subreddit. All paths produce the same `MarketSignal` that Stage 0 consumes. The first checkpoint is always a market confirmation, not a blank input.
+**The dump is the primary intake, but not the only path.** The builder maintains an idea backlog inside Groundwork. When ready to run, they hit run — the pipeline reads their ideas and surfaces markets those ideas cluster around. Alternatively, the builder can skip the dump and signal a market directly: by naming it (free text), naming a competitor, or naming a subreddit. These are mutually exclusive paths — if a market signal is provided, Stage 0 and Checkpoint 0 are skipped entirely and the pipeline goes straight to Stage 1 research. Market identification only runs when the builder has not named a market.
 
 ---
 
@@ -79,12 +79,12 @@ V1 is invite-only / unlisted — no paygate. Luke uses it himself first. After 3
 
 ### Frontend (Next.js)
 
-- `/tools/groundwork` → Idea backlog: persistent textarea for dumping ideas (one or many). Voice input supported. "Run pipeline" button triggers Stage 0. Submits all ideas to FastAPI, stores `thread_id`, begins polling.
+- `/tools/groundwork` → Two entry paths. **Dump path:** idea backlog textarea — voice input supported, ideas persist in localStorage. "Run pipeline →" submits ideas with no market signal; Stage 0 identifies markets. **Market path:** "pick a market →" corner link opens four market signal modes (Browse, Type it, Competitor, Subreddit); "Run pipeline →" submits the signal only, skipping Stage 0 and Checkpoint 0 entirely.
 - `/tools/groundwork/run/[threadId]` → Pipeline progress + checkpoint UI. Polls `GET /pipeline/status/:threadId` every 2s. Renders checkpoint cards when interrupted. Shows completion state with download buttons. Pipeline error state is handled inline on this route — no separate error page.
 
 ### Backend (FastAPI)
 
-- `POST /pipeline/start` → Accepts `{ ideas: string[], market_signal: MarketSignal | null }`. Validates input (at least 1 idea), creates LangGraph thread, begins async execution. Returns `{ thread_id }`.
+- `POST /pipeline/start` → Accepts `{ ideas: string[], market_signal: MarketSignal | null }`. Validates input (ideas OR market_signal required). Creates LangGraph thread, begins async execution. Returns `{ thread_id }`. Routes to Stage 0 when no market_signal; routes directly to Stage 1 when market_signal is present.
 - `GET /pipeline/status/:thread_id` → Returns `{ state: "running" | "interrupted" | "complete" | "error", stage?: string, interrupt?: { question: string, context: string } }`.
 - `POST /pipeline/resume/:thread_id` → Sends user decision to LangGraph via `Command(resume=...)`. Returns `{ state }`.
 - `GET /pipeline/result/:thread_id` → Returns `{ context_md: string, brand_md: string }` when complete.
@@ -111,15 +111,15 @@ export async function POST(req: Request): Promise<Response> {
 
 ## LangGraph Pipeline: Stage-by-Stage
 
-### Stage 0 — Market Identification (no human gate)
+### Stage 0 — Market Identification (dump path only — skipped when market_signal is set)
 
-GPT-4.1 receives all ideas from the builder's dump and:
+`claude-sonnet-4-6` receives all ideas from the builder's dump and:
 
 - Clusters them by implied market/domain
 - Identifies 2–3 distinct market areas the ideas point to
 - Writes a one-line description of each cluster and which ideas belong to it
 
-### Checkpoint 0 — Market Selection
+### Checkpoint 0 — Market Selection (dump path only — skipped when market_signal is set)
 
 `interrupt()` surfaces the market clusters. Question: "Here are the markets your ideas point to. Which one do you want to run the pipeline on?" Builder picks one. This becomes the market input for all downstream research. If only one clear cluster exists, it's surfaced as a confirmation rather than a choice.
 
