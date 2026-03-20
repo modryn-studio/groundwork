@@ -41,7 +41,7 @@ export default function StartPage() {
     if (isRunning) return;
     setIsRunning(true);
     try {
-      const res = await fetch('/api/pipeline/start', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/pipeline/start`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

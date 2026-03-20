@@ -40,7 +40,7 @@ export default function RunContent({ threadId }: { threadId: string }) {
 
     const poll = async () => {
       try {
-        const res = await fetch(`/api/pipeline/status/${threadId}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/pipeline/status/${threadId}`);
         if (!res.ok) return;
         const data: PipelineStatus = await res.json();
         setStatus(data);
@@ -59,7 +59,7 @@ export default function RunContent({ threadId }: { threadId: string }) {
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch(`/api/pipeline/resume/${threadId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/pipeline/resume/${threadId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ decision: { chosen_market: selected } }),
