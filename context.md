@@ -18,7 +18,9 @@ Operationally: **builder dumps ideas over time → pipeline identifies the marke
 
 The builder supplies the raw ideas. The pipeline identifies step 1 from them. The agents execute step 2. The human checkpoints force step 3. The output is step 4 — the actual files to build from.
 
-**The dump is the intake.** There is no "name a market" field. The builder maintains an idea backlog directly inside Groundwork. When ready to run the pipeline, they hit run — the pipeline reads all their ideas and surfaces the markets those ideas cluster around. The first checkpoint is a market selection, not a blank input.
+**"What people already pay for" is the clearest signal, not the only one.** For developer tool markets, GitHub stars, forks, and derivative tools built on top of a repo are equivalent demand signals — proven interest without a paywall. The research agents should treat high-star open-source repos in a market the same way they treat paid competitors: what problem does it solve, what do people complain about, where is it incomplete?
+
+**The dump is the primary intake, but not the only path.** The builder maintains an idea backlog inside Groundwork. When ready to run, they hit run — the pipeline reads their ideas and surfaces markets those ideas cluster around. Alternatively, the builder can skip the dump and signal a market directly: by naming it (free text), naming a competitor, or naming a subreddit. All paths produce the same `MarketSignal` that Stage 0 consumes. The first checkpoint is always a market confirmation, not a blank input.
 
 ---
 
@@ -123,11 +125,12 @@ GPT-4.1 receives all ideas from the builder's dump and:
 
 ### Stage 1 — Parallel Research (no human gate)
 
-Three worker agents run simultaneously via LangGraph parallelization using the selected market:
+Four worker agents run simultaneously via LangGraph parallelization using the selected market:
 
 - **Reddit agent:** Tavily search for "[market] people pay for", "[market] worth it reddit", "[market] alternatives reddit". Extracts: what people pay, price points, top complaints.
 - **Product Hunt agent:** Tavily search for "[market] site:producthunt.com". Extracts: top products, upvotes, pricing, common criticism in comments.
 - **Indie Hackers agent:** Tavily search for "[market] site:indiehackers.com". Extracts: what's working for builders, revenue ranges, gaps mentioned.
+- **GitHub agent:** Tavily search for "[market] site:github.com stars". Extracts: high-star repos in the market, what problems they solve, open issues and complaints, what people fork/extend. For developer tool markets, a 10k-star repo with no commercial wrapper is the same signal as a paid competitor — proven demand, unmonetized gap.
 
 ### Stage 2 — Synthesis (no human gate)
 

@@ -3,6 +3,7 @@
 Patterns extracted from studying reference implementations before building Stage 0/1.
 
 **Repos studied:**
+
 - `guy-hartstein/company-research-agent` — FastAPI + LangGraph + Tavily + SSE polling (most relevant to our API shape)
 - `langchain-ai/open_deep_research` — LangGraph interrupt() + human-in-the-loop state design (most relevant to checkpoints)
 
@@ -96,6 +97,7 @@ for query, result in zip(queries, results):
 ```
 
 **Key details:**
+
 - `return_exceptions=True` — gather doesn't throw if one search fails
 - Dedup by URL (dict keyed by URL, last write wins — fine for our use case)
 - Tavily returns a `score` field (0.0–1.0) on each result — use it for curation
@@ -117,6 +119,7 @@ def curate(docs: list[dict]) -> list[dict]:
 ```
 
 For Groundwork research workers, categories map to:
+
 - `pain_researcher` — Reddit complaints, job-to-be-done threads
 - `buyer_researcher` — "what would you pay for" threads, willingness signals
 - `competitor_researcher` — product listings, pricing pages
@@ -144,13 +147,15 @@ def checkpoint_node(state: PipelineState) -> PipelineState:
 ```
 
 **How it works end-to-end:**
+
 1. Pipeline runs until `interrupt()` → LangGraph saves state to checkpointer (PostgreSQL)
-2. Status endpoint returns `state: "interrupted"` + `interrupt_data` 
+2. Status endpoint returns `state: "interrupted"` + `interrupt_data`
 3. Frontend shows checkpoint UI to user
 4. User picks → POST `/pipeline/resume/:id` with decision
 5. LangGraph resumes from saved state via `Command(resume=user_decision)`
 
 **Checkpointer setup (PostgreSQL):**
+
 ```python
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 
@@ -209,7 +214,13 @@ f"site:reddit.com {market} software recommendation"
 f"Product Hunt {market} tool reviews"
 f"Indie Hackers {market} revenue"
 
-# Competitor signals  
+# GitHub interest signals (especially for dev tool markets)
+f"site:github.com {market} tool"
+f"github {market} open source stars"
+# Note: high-star repos with no commercial wrapper = demand without a product.
+# Treat the same as a paid competitor — what problem, what's missing, what do people fork.
+
+# Competitor signals
 f"{market} software pricing plans"
 f"{market} tool alternatives"
 f"best {market} SaaS comparison"
