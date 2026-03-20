@@ -95,6 +95,18 @@ Open `context.md` → find `## Minimum Money Loop` → keep it visible. Every bu
 
 **Before a major implementation:**
 
+**Scan GitHub for reference implementations.** Before building any non-trivial backend pipeline or system architecture, spend 20 minutes reading 2-3 open-source repos that solve a similar problem. You're not looking for code to copy — you're looking for patterns to borrow and mistakes to skip.
+
+How to search: use `mcp_github_search_repositories` with short 2-3 word queries (multi-word phrases return zero results). Read the root directory listing, then `README.md` + the main graph or pipeline file. That's usually enough.
+
+What to extract:
+- API shape (how does the frontend start a job and poll for results?)
+- State schema (what does the data flowing through the pipeline look like?)
+- Search/retrieval patterns (how are queries structured, how is scoring handled?)
+- Human-in-the-loop pattern (if checkpoints are needed, how does interrupt() work?)
+
+Then drop your findings in `docs/backend-reference.md` before writing a line of code. This file is your implementation spec cross-referenced against what actually works in the wild.
+
 Run `/validate` with a focus area. The mechanics matter — this only works correctly in **Agent mode**:
 
 1. Type `/validate` in the chat input — VS Code will show a dropdown suggesting the prompt. Select it so the prompt file actually loads.
