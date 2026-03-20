@@ -22,11 +22,7 @@ export async function GET(
     });
 
     const data = await upstream.json();
-    return log.end(
-      ctx,
-      Response.json(data, { status: upstream.status }),
-      { state: data.state }
-    );
+    return log.end(ctx, Response.json(data, { status: upstream.status }), { state: data.state });
   } catch (error) {
     log.err(ctx, error);
     return Response.json({ error: 'Failed to fetch status' }, { status: 500 });

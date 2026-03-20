@@ -7,11 +7,7 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default async function RunPage({
-  params,
-}: {
-  params: Promise<{ threadId: string }>;
-}) {
+export default async function RunPage({ params }: { params: Promise<{ threadId: string }> }) {
   const { threadId } = await params;
   return <RunContent threadId={threadId} />;
 }

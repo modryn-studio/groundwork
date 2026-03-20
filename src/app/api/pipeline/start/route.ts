@@ -21,11 +21,9 @@ export async function POST(req: Request): Promise<Response> {
     });
 
     const data = await upstream.json();
-    return log.end(
-      ctx,
-      Response.json(data, { status: upstream.status }),
-      { thread_id: data.thread_id }
-    );
+    return log.end(ctx, Response.json(data, { status: upstream.status }), {
+      thread_id: data.thread_id,
+    });
   } catch (error) {
     log.err(ctx, error);
     return Response.json({ error: 'Failed to start pipeline' }, { status: 500 });

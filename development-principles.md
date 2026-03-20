@@ -36,14 +36,15 @@ Ugly is acceptable. Broken is not. Polish the core action after it functions.
 
 **Role split:**
 
-| Tool | Job | When to use |
-|------|-----|-------------|
-| Copilot (VSCode) | Feature logic, state, API wiring, anything needing codebase context | All the time |
-| v0.dev | Visual UI component generation — outputs Next.js + Tailwind natively, GitHub sync to branch | Once the feature works and you need a specific component to look right |
-| 21st.dev | Browse before building agentic/pipeline UI — streaming indicators, status cards, checkpoint layouts | Before building pipeline screens from scratch |
-| Stitch (Google) | Design exploration / visual direction — post-prototype only | Once you have something working to react against |
+| Tool             | Job                                                                                                 | When to use                                                            |
+| ---------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Copilot (VSCode) | Feature logic, state, API wiring, anything needing codebase context                                 | All the time                                                           |
+| v0.dev           | Visual UI component generation — outputs Next.js + Tailwind natively, GitHub sync to branch         | Once the feature works and you need a specific component to look right |
+| 21st.dev         | Browse before building agentic/pipeline UI — streaming indicators, status cards, checkpoint layouts | Before building pipeline screens from scratch                          |
+| Stitch (Google)  | Design exploration / visual direction — post-prototype only                                         | Once you have something working to react against                       |
 
 **Rules:**
+
 - Don't reach for v0/Stitch until the feature works against real data
 - Use v0 surgically: one problem, one component, import it, wire it in VSCode
 - Time saved by AI dev speed → distribution, not UI polish. Post the launch log first.

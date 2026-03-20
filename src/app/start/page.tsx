@@ -162,7 +162,12 @@ export default function StartPage() {
               {marketSignal?.label}
             </span>
           </div>
-          <Button type="button" onClick={handleRun} disabled={isRunning} className="rounded-none px-6">
+          <Button
+            type="button"
+            onClick={handleRun}
+            disabled={isRunning}
+            className="rounded-none px-6"
+          >
             {isRunning ? 'Starting...' : 'Run pipeline →'}
           </Button>
         </div>

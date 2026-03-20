@@ -8,9 +8,10 @@ applyTo: '**/*.tsx'
 
 Every element that requires mental processing is a tax on the user. Keep it zero.
 
-**Reference:** `the.dump` home page — screen is a textarea, nothing else. That is the standard. Before building any screen or component, ask: what is the ONE action here, and what can be hidden until needed?
+**Reference standard:** Screen = one action, nothing else visible. Before building any screen or component, ask: what is the ONE action here, and what can be hidden until needed?
 
 **Before writing JSX, stop and answer:**
+
 1. What is the single action on this screen? (4 words max — if you can't, the screen has too much)
 2. What elements can be gated behind state instead of shown upfront?
 3. Is there any copy I'm about to write that the UI itself should communicate?

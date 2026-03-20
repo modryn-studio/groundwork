@@ -25,7 +25,7 @@ basePath: /tools/groundwork
 - Resend — transactional email via `/api/feedback`
 - Stripe — installed; not active in V1 (email-only)
 - Lucide React — icons
-- **Backend (not in this repo — separate Railway Python service):** LangGraph, FastAPI, Tavily Python SDK, OpenAI Python SDK, psycopg — see context.md for environment variables
+- **Backend (not in this repo — separate Railway Python service):** LangGraph, langgraph-checkpoint-postgres (Neon PostgreSQL checkpointer), FastAPI + uvicorn, Tavily Python SDK, OpenAI GPT-4.1, psycopg — see context.md for environment variables
 
 ## Project Structure
 
@@ -34,8 +34,8 @@ basePath: /tools/groundwork
 /app/start              → Market discovery + idea dump intake route
 /app/run/[threadId]     → Pipeline progress + checkpoint UI
 /app/api                → API proxy routes (feedback, checkout)
-/components             → Reusable UI components (EmailSignup, PayGate, FeedbackWidget, MarketGrid, IdeaDump)
-/config                 → site.ts — single source of truth for metadata; markets.ts — static market list
+/components             → Reusable UI components (EmailSignup, PayGate, FeedbackWidget, market-mode-tabs, market-text-input)
+/config                 → site.ts — single source of truth for metadata; markets.ts — MarketSignal type + static market list
 /lib                    → Utilities, analytics stub, route-logger, cn
 ```
 
@@ -44,7 +44,7 @@ basePath: /tools/groundwork
 **Frontend (Next.js)**
 
 - `/` → Landing page: email waitlist signup. Untouched until post-validation.
-- `/start` → Idea backlog + market discovery. Persistent idea dump (localStorage). Market grid (13 cards, tagged). "Run pipeline" CTA (disabled until backend is live).
+- `/start` → Idea dump + market discovery. Four intake modes: Browse (category grid), Type it (free text), Competitor (name a competitor), Subreddit (subreddit name). Each mode produces a `MarketSignal`. "Run pipeline" CTA enabled when a signal is set.
 - `/run/[threadId]` → Pipeline progress + checkpoint UI; polls backend every 2s; error state handled inline
 - `/privacy` → Privacy policy
 - `/terms` → Terms of service
@@ -96,7 +96,9 @@ The original `/start` put a 13-card market grid AND a textarea on the same scrol
 - Never use: "powerful", "seamless", "AI-powered", "unlock", "revolutionize", "validate", "supercharge"
 
 **Target User**
-A solo developer with an idea (or a market they care about) who wants to start building — not spend a week on research and positioning before touching code. They've done this the hard way before. They know the research is necessary. They don't want to do it manually again. Groundwork doesn't replace their judgment — it does the research and names the decisions so they can make them fast.
+A solo builder who has an idea (or a market they already care about) and wants to start building — not spend a week on market research, competitive analysis, and positioning before touching code. They've done this the hard way before. They know the research is necessary. They just don't want to do it manually again.
+
+**Core positioning:** Groundwork doesn't replace your judgment. It does the research and names the decisions so you can make them fast. The output isn't a report — it's the exact files you need to start building. You supply the idea. Groundwork does the legwork.
 
 **Visual Rules**
 

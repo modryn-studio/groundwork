@@ -19,9 +19,7 @@ export function MarketTextInput({ placeholder, prefix, onSubmit }: MarketTextInp
 
   return (
     <div className="border-border flex items-center border-b py-4">
-      {prefix && (
-        <span className="text-muted font-mono text-sm mr-1 select-none">{prefix}</span>
-      )}
+      {prefix && <span className="text-muted mr-1 font-mono text-sm select-none">{prefix}</span>}
       <input
         type="text"
         value={value}
