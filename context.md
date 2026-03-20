@@ -45,7 +45,7 @@ V1 is invite-only / unlisted — no paygate. Luke uses it himself first. After 3
 **Two-service architecture:**
 
 - **Next.js frontend** (existing modryn-studio-v2 boilerplate) — input form, pipeline progress UI, checkpoint cards, output/download page
-- **Python FastAPI backend** (separate Railway deployment) — LangGraph pipeline, Tavily research workers, GPT-4.1 synthesis, PostgreSQL checkpointer
+- **Python FastAPI backend** (separate Render deployment) — LangGraph pipeline, Tavily research workers, Claude synthesis, PostgreSQL checkpointer
 
 **Why two services:** LangGraph requires a persistent, long-running process for state across `interrupt()` calls. Vercel functions time out at 60 seconds — research runs routinely exceed that. Railway solves it cleanly.
 
@@ -61,19 +61,19 @@ V1 is invite-only / unlisted — no paygate. Luke uses it himself first. After 3
 - `langgraph-checkpoint-postgres` — PostgreSQL checkpointer (Neon free tier, persists state across Railway restarts)
 - `fastapi` + `uvicorn` — API server
 - `tavily-python` — `TavilySearchResults` tool for agentic web research (Reddit, Product Hunt, Indie Hackers). Free: 1,000 calls/mo. Paid: $0.008/call. (env var: `TAVILY_API_KEY`)
-- `openai` — GPT-4.1 for synthesis, gap analysis, and doc generation. Use `gpt-4.1` only. (env var: `OPENAI_API_KEY`)
+- `langchain-anthropic` — `claude-sonnet-4-6` for Stage 0, `claude-opus-4-6` for Stage 2+ synthesis, gap analysis, and doc generation. (env var: `ANTHROPIC_API_KEY`)
 - `psycopg` — PostgreSQL driver for Neon checkpointer (env var: `NEON_DATABASE_URL`)
 
 ### Environment Variables (Backend)
 
-- `OPENAI_API_KEY`
+- `ANTHROPIC_API_KEY`
 - `TAVILY_API_KEY`
 - `NEON_DATABASE_URL` — Neon PostgreSQL connection string
 - `ALLOWED_ORIGINS` — comma-separated list of allowed CORS origins (e.g. `https://modrynstudio.com,http://localhost:3000`)
 
 ### Environment Variables (Frontend)
 
-- `NEXT_PUBLIC_GROUNDWORK_API_URL` — base URL of the Railway FastAPI deployment
+- `PIPELINE_API_URL` — base URL of the Render FastAPI deployment (server-side only, no `NEXT_PUBLIC_` prefix)
 
 ## Route Map
 
@@ -84,7 +84,7 @@ V1 is invite-only / unlisted — no paygate. Luke uses it himself first. After 3
 
 ### Backend (FastAPI)
 
-- `POST /pipeline/start` → Accepts `{ ideas: string[] }`. Validates input (at least 1 idea), creates LangGraph thread, begins async execution. Returns `{ thread_id }`.
+- `POST /pipeline/start` → Accepts `{ ideas: string[], market_signal: MarketSignal | null }`. Validates input (at least 1 idea), creates LangGraph thread, begins async execution. Returns `{ thread_id }`.
 - `GET /pipeline/status/:thread_id` → Returns `{ state: "running" | "interrupted" | "complete" | "error", stage?: string, interrupt?: { question: string, context: string } }`.
 - `POST /pipeline/resume/:thread_id` → Sends user decision to LangGraph via `Command(resume=...)`. Returns `{ state }`.
 - `GET /pipeline/result/:thread_id` → Returns `{ context_md: string, brand_md: string }` when complete.
