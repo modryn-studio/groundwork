@@ -60,9 +60,10 @@ basePath: /tools/groundwork
 
 This is the design philosophy for every screen in Groundwork. The user is a builder who is already in research fatigue. Every element that requires mental processing is a tax. Keep the tax as close to zero as possible.
 
-**Reference implementation:** `https://v0-idea-dump.vercel.app/` (modryn-studio/the.dump). Screen = textarea. That's it. One action, nothing else visible. This is the bar. Before building any new screen, ask: is this as simple as the.dump's home page?
+**Reference implementation:** Screen = textarea. That's it. One action, nothing else visible. This is the bar. Before building any new screen, ask: is this screen doing exactly one thing?
 
 **Before writing a single component, answer these three questions:**
+
 1. What is the ONE thing the user does on this screen? If you can't answer in 4 words, the screen has too much.
 2. What can be hidden until the user needs it? Gate on state, not on scroll position.
 3. What copy am I about to write that the UI itself should communicate instead?
@@ -287,3 +288,13 @@ Tell Copilot **"check logs"** at any point — it reads `dev.log` and flags erro
 - Ship one killer feature, not ten mediocre ones
 - Instrument analytics before features — data from day one
 - Onboard users to value in under 2 minutes
+- **Local-first by default** — no accounts, no data stored server-side, pay only when you use it. This is a brand-level commitment across every product, not a feature toggle.
+
+## Positioning Decision: AI
+
+Do NOT lead with "AI" in copy or headlines. The backlash is real and targets AI hype, not useful tools. Lead with outcomes and the user's problem. AI is an implementation detail, not a selling point.
+
+- ✅ "Tools for people who don't have time for bad software"
+- ✅ "I did the research so you don't have to"
+- ❌ "AI-powered", "AI-first", "built with AI"
+  Products use AI internally. The marketing never needs to say so.
