@@ -7,6 +7,16 @@ export interface Market {
   tags: MarketTag[];
 }
 
+export type MarketSignalType = 'category' | 'freetext' | 'competitor' | 'subreddit';
+
+export interface MarketSignal {
+  type: MarketSignalType;
+  /** Raw value — market id, typed text, competitor name, or subreddit slug */
+  value: string;
+  /** Display string for the CTA bar */
+  label: string;
+}
+
 // Tags are applied based on research, not optimism.
 // popular         = established paid products with real user bases exist
 // weak-competition = no dominant tool serving the solo builder niche specifically

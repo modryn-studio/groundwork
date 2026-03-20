@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { markets, type Market } from '@/config/markets';
+import { markets, type MarketSignal } from '@/config/markets';
 import { MarketGrid } from '@/components/market-grid';
+import { MarketModeTabs, type MarketMode } from '@/components/market-mode-tabs';
+import { MarketTextInput } from '@/components/market-text-input';
 import { IdeaDump, type DumpedIdea } from '@/components/idea-dump';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
@@ -11,7 +13,8 @@ type View = 'dump' | 'market';
 
 export default function StartPage() {
   const [view, setView] = useState<View>('dump');
-  const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
+  const [marketSignal, setMarketSignal] = useState<MarketSignal | null>(null);
+  const [marketMode, setMarketMode] = useState<MarketMode>('category');
   const [ideas, setIdeas] = useState<DumpedIdea[]>([]);
   const [keyboardOffset, setKeyboardOffset] = useState(0);
 
@@ -30,6 +33,25 @@ export default function StartPage() {
       vp.removeEventListener('scroll', update);
     };
   }, []);
+
+  const handleModeChange = (mode: MarketMode) => {
+    setMarketMode(mode);
+    setMarketSignal(null);
+  };
+
+  // Derive the Market object the grid needs to show a checkmark
+  const selectedMarketForGrid =
+    marketSignal?.type === 'category'
+      ? (markets.find((m) => m.id === marketSignal.value) ?? null)
+      : null;
+
+  // TODO: wire this into ideas[] when pipeline is live
+  // const formatSignal = (s: MarketSignal) => ({
+  //   category:   `market category: ${s.label}`,
+  //   freetext:   `my market: ${s.value}`,
+  //   competitor: `my competitor: ${s.value}`,
+  //   subreddit:  `my community: r/${s.value}`,
+  // }[s.type]);
 
   return (
     <main className="bg-bg min-h-screen">
@@ -50,11 +72,41 @@ export default function StartPage() {
           >
             ← dump
           </Button>
-          <MarketGrid
-            markets={markets}
-            selected={selectedMarket}
-            onSelect={(m) => setSelectedMarket(selectedMarket?.id === m.id ? null : m)}
-          />
+          <MarketModeTabs mode={marketMode} onModeChange={handleModeChange} />
+          {marketMode === 'category' && (
+            <MarketGrid
+              markets={markets}
+              selected={selectedMarketForGrid}
+              onSelect={(m) =>
+                setMarketSignal(
+                  marketSignal?.value === m.id
+                    ? null
+                    : { type: 'category', value: m.id, label: m.name }
+                )
+              }
+            />
+          )}
+          {marketMode === 'freetext' && (
+            <MarketTextInput
+              placeholder="freelance video editors"
+              onSubmit={(v) => setMarketSignal({ type: 'freetext', value: v, label: v })}
+            />
+          )}
+          {marketMode === 'competitor' && (
+            <MarketTextInput
+              placeholder="Notion"
+              onSubmit={(v) => setMarketSignal({ type: 'competitor', value: v, label: v })}
+            />
+          )}
+          {marketMode === 'subreddit' && (
+            <MarketTextInput
+              placeholder="personalfinance"
+              prefix="r/"
+              onSubmit={(v) =>
+                setMarketSignal({ type: 'subreddit', value: v, label: `r/${v}` })
+              }
+            />
+          )}
         </div>
       )}
 
@@ -74,11 +126,11 @@ export default function StartPage() {
         </div>
       )}
 
-      {/* Sticky CTA — appears when market selected */}
+      {/* Sticky CTA — appears when market signal set */}
       <div
         className={cn(
           'border-border bg-bg fixed inset-x-0 border-t transition-transform duration-200',
-          selectedMarket ? 'translate-y-0' : 'translate-y-full'
+          marketSignal ? 'translate-y-0' : 'translate-y-full'
         )}
         style={{ bottom: keyboardOffset }}
       >
@@ -86,7 +138,7 @@ export default function StartPage() {
           <div className="flex flex-col">
             <span className="text-muted text-[11px] tracking-widest uppercase">Market</span>
             <span className="font-heading text-text text-sm font-semibold">
-              {selectedMarket?.name}
+              {marketSignal?.label}
             </span>
           </div>
           <Button type="button" disabled title="Pipeline coming soon" className="rounded-none px-6">
